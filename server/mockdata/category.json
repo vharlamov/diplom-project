@@ -1,0 +1,36 @@
+[
+	{
+		"name": "Посуда",
+		"subcategories": [
+			"621a0b9565a7079a35b89884",
+			"621a0b9565a7079a35b89886",
+			"621a0b9565a7079a35b89885"
+		],
+		"chapter": "ceramics"
+	},
+	{
+		"name": "Копилки",
+		"subcategories": [],
+		"chapter": "ceramics"
+	},
+	{
+		"name": "Гранаты",
+		"subcategories": [],
+		"chapter": "ceramics"
+	},
+	{
+		"name": "Свистульки",
+		"subcategories": [],
+		"chapter": "ceramics"
+	},
+	{
+		"name": "Украшения",
+		"subcategories": [
+			"621a474551cb41e8b57cb8e0",
+			"621a474551cb41e8b57cb8e2",
+			"621a474551cb41e8b57cb8e1",
+			"621a474551cb41e8b57cb8e3"
+		],
+		"chapter": "ceramics"
+	}
+]
