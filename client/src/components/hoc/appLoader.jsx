@@ -10,25 +10,24 @@ import {
 	getSubcatLoadingStatus,
 	loadSubcatList,
 } from '../../store/subcategories'
-import { getUsersLoadingStatus, loadUsersList } from '../../store/users'
+// import { getUsersLoadingStatus, loadUsersList } from '../../store/users'
 
 const AppLoader = ({ children }) => {
 	const dispatch = useDispatch()
 	const categoriesLoading = useSelector(getCatLoadingStatus())
 	const subcatsLoading = useSelector(getSubcatLoadingStatus())
 	const productsLoading = useSelector(getProductsLoadingStatus())
-	const usersLoading = useSelector(getUsersLoadingStatus())
+	// const usersLoading = useSelector(getUsersLoadingStatus())
 
 	useEffect(() => {
 		dispatch(loadCategoriesList())
 		dispatch(loadSubcatList())
-		dispatch(loadUsersList())
+		// dispatch(loadUsersList())
 		dispatch(loadProductsList())
 		dispatch(loadShcart())
 	}, [])
 
-	if (categoriesLoading || subcatsLoading || productsLoading || usersLoading)
-		return 'Loading'
+	if (categoriesLoading || subcatsLoading || productsLoading) return 'Loading'
 	return children
 }
 

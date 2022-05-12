@@ -18,6 +18,18 @@ const authService = {
 			password,
 			returnSecureToken: true,
 		})
+		// console.log('authdata', data)
+
+		return data
+	},
+
+	logout: () => {
+		httpAuth.post('logout')
+	},
+
+	proof: async () => {
+		const { data } = await httpAuth.post('proof')
+		console.log('proof data', data)
 
 		return data
 	},

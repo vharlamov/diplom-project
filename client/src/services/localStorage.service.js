@@ -12,7 +12,6 @@ export function setTokens({
 	expiresIn = 3600,
 }) {
 	const expiresDate = new Date().getTime() + expiresIn * 1000
-	console.log('service login')
 
 	localStorage.setItem(USERID_KEY, userId)
 	localStorage.setItem(TOKEN_KEY, accessToken)
@@ -37,7 +36,6 @@ export function getUserId() {
 }
 
 export function removeAuthData() {
-	console.log('servise logout')
 	localStorage.removeItem(TOKEN_KEY)
 	localStorage.removeItem(REFRESH_KEY)
 	localStorage.removeItem(USERID_KEY)
@@ -45,7 +43,6 @@ export function removeAuthData() {
 }
 
 export function setShopCart(payload) {
-	console.log('localstorage set', payload)
 	localStorage.setItem(SHOP_CART, payload)
 }
 

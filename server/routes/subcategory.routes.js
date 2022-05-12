@@ -1,6 +1,7 @@
 const express = require('express')
 const Subcategory = require('../models/Subcategory')
 const router = express.Router()
+const auth = require('../middleware/auth.middleware')
 
 router.get('/', async (req, res) => {
 	console.log('server subcategory get')
@@ -14,7 +15,8 @@ router.get('/', async (req, res) => {
 		})
 	}
 })
-router.post('/', async (req, res) => {
+
+router.post('/', auth, async (req, res) => {
 	try {
 		const subcategory = await Subcategory.create(req.body)
 		res.status(200).send(subcategory)
@@ -25,6 +27,7 @@ router.post('/', async (req, res) => {
 		})
 	}
 })
-router.delete('/:id', async (req, res) => {})
+
+router.delete('/:id', auth, async (req, res) => {})
 
 module.exports = router

@@ -1,6 +1,7 @@
 const express = require('express')
 const Product = require('../models/Product')
 const router = express.Router()
+const auth = require('../middleware/auth.middleware')
 
 router.get('/', async (req, res) => {
 	try {
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
 	}
 })
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	try {
 		console.log('post', req.body)
 		const product = await Product.create(req.body)
@@ -26,7 +27,7 @@ router.post('/', async (req, res) => {
 	}
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
 	try {
 		const { id } = req.params
 		const product = await Product.findById(id)
@@ -39,7 +40,7 @@ router.delete('/:id', async (req, res) => {
 	}
 })
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', auth, async (req, res) => {
 	try {
 		const { id } = req.params
 		const product = await Product.findByIdAndUpdate(id, req.body)

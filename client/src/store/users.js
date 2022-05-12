@@ -12,6 +12,7 @@ const initialState = localStorageService.getAccessToken()
 			error: null,
 			auth: { userId: localStorageService.getUserId() },
 			isLogged: true,
+			isAdmin: false,
 			dataLoaded: false,
 	  }
 	: {
@@ -20,6 +21,7 @@ const initialState = localStorageService.getAccessToken()
 			error: null,
 			auth: null,
 			isLogged: false,
+			isAdmin: false,
 			dataLoaded: false,
 	  }
 
@@ -35,7 +37,7 @@ const usersSlice = createSlice({
 			state.dataLoaded = true
 			state.isLoading = false
 		},
-		usersRequestFiled: (state, action) => {
+		usersRequestFailed: (state, action) => {
 			state.error = action.payload
 			state.isLoading = false
 		},
@@ -45,6 +47,9 @@ const usersSlice = createSlice({
 		},
 		authRequestFailed: (state, action) => {
 			state.error = action.payload
+		},
+		authAdmin: (state, action) => {
+			state.isAdmin = action.payload
 		},
 		userCreated: (state, action) => {
 			state.entities.push(action.payload)
@@ -66,9 +71,10 @@ const usersSlice = createSlice({
 
 const { reducer: usersReducer, actions } = usersSlice
 const {
+	authAdmin,
 	usersRequested,
 	usersReceved,
-	usersRequestFiled,
+	usersRequestFailed,
 	authRequestFailed,
 	authRequestSuccess,
 	userLoggedOut,
@@ -88,11 +94,15 @@ export const login =
 
 		try {
 			const data = await authService.login({ email, password })
+			const { isAdmin } = await authService.proof()
 			dispatch(authRequestSuccess({ userId: data.userId }))
+			console.log('isAdmin in users', isAdmin)
+			dispatch(authAdmin(isAdmin))
 			localStorageService.setTokens(data)
 			history.push('/')
 		} catch (error) {
-			const { code, message } = error.response.data.error
+			console.log('error in users', error.response)
+			const { code, message } = error.response.data
 			if (code === 400) {
 				const errorMessage = generetaAuthError(message)
 
@@ -119,19 +129,43 @@ export const signUp =
 		}
 	}
 
+// export const proofAdmin = (redirect) => async (dispatch) => {
+// 	dispatch(authRequested())
+// 	try {
+// 		const token = localStorageService.getAccessToken()
+// 		const data = await authService.proof(token)
+//
+// 		dispatch(authRequestSuccess({ isAdmin: data.isAdmin }))
+// 		history.push(redirect)
+// 	} catch (error) {
+// 		dispatch(authRequestFailed(error.message))
+// 	}
+// }
+
 export const logOut = () => (dispatch) => {
 	localStorageService.removeAuthData()
 	dispatch(userLoggedOut())
+	dispatch(authAdmin(false))
 	history.push('/')
 }
 
-export const loadUsersList = () => async (dispatch) => {
+// export const loadUsersList = () => async (dispatch) => {
+// 	dispatch(usersRequested())
+// 	try {
+// 		const { content } = await userService.getUser()
+// 		dispatch(usersReceved(content))
+// 	} catch (error) {
+// 		dispatch(usersRequestFailed(error.message))
+// 	}
+// }
+
+export const loadUser = () => async (dispatch) => {
 	dispatch(usersRequested())
 	try {
 		const { content } = await userService.getUser()
 		dispatch(usersReceved(content))
 	} catch (error) {
-		dispatch(usersRequestFiled(error.message))
+		dispatch(usersRequestFailed(error.message))
 	}
 }
 
@@ -166,11 +200,6 @@ export const getDataStatus = () => (state) => state.users.dataLoaded
 export const getUsersLoadingStatus = () => (state) => state.users.isLoading
 export const getCurrentUserId = () => (state) => state.users.auth.userId
 export const getAuthErrors = () => (state) => state.users.error
-export const getIsAdmin = () => (state) => {
-	if (!state.users?.auth) return null
-	const userId = state.users.auth.userId
-	const user = state.users.entities.find((u) => u._id === userId)
-	return user.isAdmin
-}
+export const getIsAdmin = () => (state) => state.users.isAdmin
 
 export default usersReducer

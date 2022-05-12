@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs')
 const tokenService = require('../services/token.service')
 const Token = require('../models/Token')
 
+let isAdmin = false
+
 router.post('/signUp', [
 	check('email', 'Некорректный email').isEmail(),
 	check('password', 'Минимальная длина пароля 8 символов').isLength({ min: 8 }),
@@ -40,6 +42,7 @@ router.post('/signUp', [
 			const newUser = await User.create({
 				...req.body,
 				password: hashedPassword,
+				isAdmin: false,
 			})
 
 			const tokens = tokenService.generate({ _id: newUser._id })
@@ -76,6 +79,7 @@ router.post('/signInWithPassword', [
 
 			const { email, password } = req.body
 			const existUser = await User.findOne({ email })
+			// console.log('finded user', existUser)
 
 			if (!existUser) {
 				return res.status(400).json({
@@ -98,11 +102,14 @@ router.post('/signInWithPassword', [
 			}
 
 			const tokens = tokenService.generate({ _id: existUser._id })
+			isAdmin = existUser.isAdmin
+			// console.log('auth route isAdmin', isAdmin)
 
 			await tokenService.save(existUser._id, tokens.refreshToken)
 
 			res.status(200).send({
 				...tokens,
+				isAdmin: isAdmin,
 				userId: existUser._id,
 			})
 		} catch (error) {
@@ -142,6 +149,16 @@ router.post('/token', async (req, res) => {
 			message: 'На сервере произошла ошибка (signIn token). Попробуйте позже.',
 		})
 	}
+})
+
+router.post('/proof', (req, res) => {
+	res.status(200).json({ isAdmin: isAdmin })
+	console.log('proof', isAdmin)
+})
+
+router.post('/logout', (req, res) => {
+	isAdmin = false
+	// console.log('logout', isAdmin)
 })
 
 module.exports = router

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const config = require('config')
 const Token = require('../models/Token')
+const User = require('../models/User')
 
 class TokenService {
 	generate(payload) {
@@ -39,6 +40,17 @@ class TokenService {
 	validateAccess(accessToken) {
 		try {
 			return jwt.verify(accessToken, config.get('accessSecret'))
+		} catch (e) {
+			return null
+		}
+	}
+
+	async validateAdmin(accessToken) {
+		try {
+			const token = await Token.findOne({ accessToken })
+			const user = await User.findOne({ user: token.user })
+			console.log('user name', user.name)
+			return user.isAdmin
 		} catch (e) {
 			return null
 		}

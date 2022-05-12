@@ -11,7 +11,6 @@ const RegisterForm = () => {
 	const [data, setData] = useState({
 		email: '',
 		password: '',
-		isAdmin: false,
 		name: '',
 	})
 

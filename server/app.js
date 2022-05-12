@@ -10,7 +10,9 @@ require('dotenv').config()
 const helpers = require('./helpers')
 const bodyParser = require('body-parser')
 const fs = require('fs/promises')
-const readdir = require('fs/promises')
+// const readdir = require('fs/promises')
+// const session = require('express-session')
+const auth = require('./middleware/auth.middleware')
 
 const app = express()
 
@@ -21,6 +23,18 @@ app.use(cors())
 app.use('/api', routes)
 
 const PORT = process.env.PORT ?? 8080
+
+console.log(process.env.NODE_ENV)
+
+if (process.env.NODE_ENV === 'production') {
+	app.use('/', express.static(path.join(__dirname, 'client')))
+
+	const indexPath = path.join(__dirname, 'client', 'index.html')
+
+	app.get('*', (req, res) => {
+		res.sendFile(indexPath)
+	})
+}
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -38,7 +52,7 @@ app.use(express.static(__dirname))
 
 app.use(bodyParser.urlencoded({ extended: false, limit: '5mb' }))
 
-app.post('/upload-profile-pic', (req, res, next) => {
+app.post('/upload-profile-pic', auth, (req, res, next) => {
 	let upload = multer({
 		storage: storage,
 		fileFilter: helpers.imageFilter,
@@ -61,7 +75,7 @@ app.post('/upload-profile-pic', (req, res, next) => {
 	})
 })
 
-app.delete('/upload-profile-pic/:filename', (req, res) => {
+app.delete('/upload-profile-pic/:filename', auth, (req, res) => {
 	const filename = req.params.filename
 
 	fs.unlink(__dirname + `/uploads/${filename}`, (err) => {

@@ -25,6 +25,10 @@ router.post('/', async (req, res) => {
 		})
 	}
 })
+
+// router.('/:id', async (req, res) => {
+//
+// })
 router.delete('/:id', async (req, res) => {})
 
 module.exports = router
