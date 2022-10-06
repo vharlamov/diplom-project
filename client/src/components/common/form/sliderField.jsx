@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const SliderField = ({ onChange, value, name, minmax, defaultValue }) => {
+const SliderField = ({ onChange, value, name, minmax }) => {
+	const [data, setData] = useState(value)
+
 	const handleChange = ({ target }) => {
+		setData(target.value)
 		onChange({ name: target.name, value: target.value })
 	}
 
@@ -20,12 +23,13 @@ const SliderField = ({ onChange, value, name, minmax, defaultValue }) => {
 			<input
 				type='range'
 				className='form-range'
+				value={value}
 				id='priceRange'
 				min={minmax.min}
 				max={minmax.max}
-				defaultValue={defaultValue}
 				name={name}
 				onChange={handleChange}
+				step={50}
 			/>
 			<div className='d-flex flex-row justify-content-between'>
 				<span>{minmax.min}</span>

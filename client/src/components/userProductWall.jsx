@@ -3,16 +3,16 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ProductCard from './productCard'
 
-const UserProductWall = ({ chapter, products, onChange }) => {
+const UserProductWall = ({ products, handleShCart }) => {
 	// console.log('UserProductWall', products)
 	const params = useParams()
-	const sortedProds = products.filter((p) => p.chapter === chapter)
+	// const sortedProds = products.filter((p) => p.chapter === chapter)
 	const [data, setData] = useState([])
 	const [search, setSearch] = useState('')
 
-	useEffect(() => {
-		setData(sortedProds)
-	}, [products])
+	// useEffect(() => {
+	// 	setData(sortedProds)
+	// }, [products])
 
 	const handleSearch = ({ target }) => {
 		setSearch(target.value)
@@ -20,16 +20,16 @@ const UserProductWall = ({ chapter, products, onChange }) => {
 
 	const filterBySearch = () => {
 		const filtered = search
-			? data.filter(
+			? products.filter(
 					(p) => p.title.toLowerCase().indexOf(search.toLowerCase()) !== -1
 			  )
-			: data
+			: products
 		return filtered
 	}
 
 	return (
 		<div className='container'>
-			<div className='row ms-0 me-2 mb-3'>
+			<div className='row'>
 				<input
 					type='text'
 					onChange={handleSearch}
@@ -37,10 +37,17 @@ const UserProductWall = ({ chapter, products, onChange }) => {
 					placeholder='Искать по названию'
 				/>
 			</div>
-			<div className='row  w-100'>
-				{filterBySearch().map((p, i) => (
-					<ProductCard data={p} key={i} />
-				))}
+			<div className='container d-flex row  w-100 px-2'>
+				<div className='d-flex row col-12 gx-2'>
+					{filterBySearch().map((p, i) => (
+						<ProductCard
+							data={p}
+							key={i}
+							className='card mb-3 shadow-sm'
+							handleShCart={handleShCart}
+						/>
+					))}
+				</div>
 			</div>
 		</div>
 	)

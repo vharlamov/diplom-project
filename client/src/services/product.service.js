@@ -19,9 +19,9 @@ const productService = {
 		return data
 	},
 
-	removeProduct: async (productId) => {
-		const { data } = await httpService.delete(productEndpoint + productId, {
-			_id: productId,
+	removeProduct: async (id) => {
+		const { data } = await httpService.delete(productEndpoint + id, {
+			_id: id,
 		})
 
 		return data

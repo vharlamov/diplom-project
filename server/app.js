@@ -24,7 +24,7 @@ app.use('/api', routes)
 
 const PORT = process.env.PORT ?? 8080
 
-console.log(process.env.NODE_ENV)
+// console.log(process.env.NODE_ENV)
 
 if (process.env.NODE_ENV === 'production') {
 	app.use('/', express.static(path.join(__dirname, 'client')))
@@ -77,6 +77,7 @@ app.post('/upload-profile-pic', auth, (req, res, next) => {
 
 app.delete('/upload-profile-pic/:filename', auth, (req, res) => {
 	const filename = req.params.filename
+	console.log('delete run')
 
 	fs.unlink(__dirname + `/uploads/${filename}`, (err) => {
 		if (err) console.log('delete error', err)

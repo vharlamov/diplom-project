@@ -1,37 +1,72 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import SidePanel from '../components/sidePanel'
-import UserProductList from '../components/userProductList'
 import UserProductWall from '../components/userProductWall'
 import { getProductsList } from '../store/products'
+import { getShopCart, updateShcart } from '../store/shopCart'
 import { getIsAdmin } from '../store/users'
+import sortProducts from '../utils/sortProducts'
 import ProductPage from './productPage'
 
 const UserPage = () => {
-	const params = useParams()
-	const history = useHistory()
+	const dispatch = useDispatch()
 	const prodList = useSelector(getProductsList())
+	const params = useParams()
 	const isAdmin = useSelector(getIsAdmin())
-	const [products, setProducts] = useState(prodList)
+	const shopCart = useSelector(getShopCart())
+	const history = useHistory()
+	const [product, setProduct] = useState(prodList)
+	const [sorted, setSorted] = useState(product)
+	const [shCart, setShCart] = useState(shopCart)
 
 	useEffect(() => {
-		const sortedProds = prodList.filter((p) => p.chapter === params.chapter)
-		setProducts(sortedProds)
-	}, [params])
+		setProduct(prodList)
+	}, [prodList])
 
-	const onSort = (products) => {
-		setProducts(products)
+	useEffect(() => {
+		dispatch(updateShcart(shCart))
+	}, [shCart])
+
+	const onSort = (sortData) => {
+		const sortedList = sortProducts(product, sortData, getPricesMinMax().max)
+
+		setSorted(sortedList)
+	}
+
+	const handleShCart = (_id) => {
+		const index = shCart.findIndex((shc) => shc._id === _id)
+		if (index === -1) {
+			setShCart((prev) => [...prev, { _id, quantity: 1 }])
+		} else {
+			setShCart((prev) => {
+				const prod = { ...prev[index] }
+				prod.quantity++
+				const newShcart = [...prev]
+				newShcart[index] = prod
+				return newShcart
+			})
+		}
+	}
+
+	function getPricesMinMax() {
+		const prices = product.map((p) => p.price).sort((a, b) => a - b)
+		return { min: prices[0], max: prices[prices.length - 1] }
 	}
 
 	return (
 		<>
 			<div className='d-flex flex-row gap-4 h-100 w-100'>
-				<SidePanel isAdmin={isAdmin} onSort={onSort} />
+				<SidePanel
+					isAdmin={isAdmin}
+					onSort={onSort}
+					products={product}
+					price={getPricesMinMax()}
+				/>
 				{params.id ? (
-					<ProductPage id={params.id} chapter={params.chapter} />
+					<ProductPage id={params.id} handleShCart={handleShCart} />
 				) : (
-					<UserProductWall chapter={params.chapter} products={products} />
+					<UserProductWall products={sorted} handleShCart={handleShCart} />
 				)}
 			</div>
 		</>

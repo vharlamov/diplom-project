@@ -7,7 +7,8 @@ import history from '../utils/history'
 
 const initialState = localStorageService.getAccessToken()
 	? {
-			entities: [],
+			entities: null,
+			currentUser: null,
 			isLoading: true,
 			error: null,
 			auth: { userId: localStorageService.getUserId() },
@@ -16,7 +17,8 @@ const initialState = localStorageService.getAccessToken()
 			dataLoaded: false,
 	  }
 	: {
-			entities: [],
+			entities: null,
+			currentUser: null,
 			isLoading: false,
 			error: null,
 			auth: null,
@@ -25,14 +27,14 @@ const initialState = localStorageService.getAccessToken()
 			dataLoaded: false,
 	  }
 
-const usersSlice = createSlice({
+export const usersSlice = createSlice({
 	name: 'users',
 	initialState,
 	reducers: {
 		usersRequested: (state) => {
 			state.isLoading = true
 		},
-		usersReceved: (state, action) => {
+		usersRecieved: (state, action) => {
 			state.entities = action.payload
 			state.dataLoaded = true
 			state.isLoading = false
@@ -42,26 +44,38 @@ const usersSlice = createSlice({
 			state.isLoading = false
 		},
 		authRequestSuccess: (state, action) => {
-			state.auth = action.payload
+			console.log('auth', action.payload)
+			state.currentUser = action.payload
+			state.auth = { userId: action.payload.userId }
 			state.isLogged = true
+			state.isAdmin = action.payload.isAdmin
 		},
 		authRequestFailed: (state, action) => {
 			state.error = action.payload
+			state.isLogged = false
 		},
 		authAdmin: (state, action) => {
-			state.isAdmin = action.payload
+			state.isAdmin = action.payload.isAdmin
+			state.currentUser = action.payload
 		},
 		userCreated: (state, action) => {
 			state.entities.push(action.payload)
 		},
 		userLoggedOut: (state) => {
+			state.currentUser = null
 			state.isLogged = false
 			state.auth = null
 		},
+		userUpdateRequested: (state) => {
+			state.isLoading = true
+		},
 		userUpdateSuccessed: (state, action) => {
-			state.entities[
-				state.entities.findIndex((u) => u._id === action.payload._id)
-			] = action.payload
+			if (state.entities) {
+				state.entities[
+					state.entities.findIndex((u) => u._id === action.payload._id)
+				] = action.payload
+			}
+			state.currentUser = action.payload
 		},
 		authRequested: (state) => {
 			state.error = null
@@ -73,17 +87,17 @@ const { reducer: usersReducer, actions } = usersSlice
 const {
 	authAdmin,
 	usersRequested,
-	usersReceved,
+	usersRecieved,
 	usersRequestFailed,
 	authRequestFailed,
 	authRequestSuccess,
 	userLoggedOut,
 	userUpdateSuccessed,
+	userUpdateRequested,
 } = actions
 
 const authRequested = createAction('users/authRequested')
 const userUpdateFailed = createAction('users/userUpdateFailed')
-const userUpdateRequested = createAction('users/userUpdateRequested')
 
 export const login =
 	({ payload, redirect }) =>
@@ -94,14 +108,13 @@ export const login =
 
 		try {
 			const data = await authService.login({ email, password })
-			const { isAdmin } = await authService.proof()
-			dispatch(authRequestSuccess({ userId: data.userId }))
-			console.log('isAdmin in users', isAdmin)
-			dispatch(authAdmin(isAdmin))
+			// console.log('auth data', data)
+
+			dispatch(authRequestSuccess(data.user))
+			dispatch(authAdmin(data.user))
 			localStorageService.setTokens(data)
-			history.push('/')
+			if (redirect) history.push(redirect)
 		} catch (error) {
-			console.log('error in users', error.response)
 			const { code, message } = error.response.data
 			if (code === 400) {
 				const errorMessage = generetaAuthError(message)
@@ -117,30 +130,32 @@ export const signUp =
 	({ payload, redirect }) =>
 	async (dispatch) => {
 		dispatch(authRequested())
+
 		try {
 			const data = await authService.register(payload)
 
 			localStorageService.setTokens(data)
 
 			dispatch(authRequestSuccess({ userId: data.userId }))
-			history.push(redirect)
+
+			if (redirect) history.push(redirect)
 		} catch (error) {
 			dispatch(authRequestFailed(error.message))
 		}
 	}
 
-// export const proofAdmin = (redirect) => async (dispatch) => {
-// 	dispatch(authRequested())
-// 	try {
-// 		const token = localStorageService.getAccessToken()
-// 		const data = await authService.proof(token)
-//
-// 		dispatch(authRequestSuccess({ isAdmin: data.isAdmin }))
-// 		history.push(redirect)
-// 	} catch (error) {
-// 		dispatch(authRequestFailed(error.message))
-// 	}
-// }
+export const proofAdmin = (redirect) => async (dispatch) => {
+	dispatch(authRequested())
+	try {
+		// const token = localStorageService.getAccessToken()
+		const data = await authService.proof()
+		console.log('proofAdmin data', data)
+		dispatch(authAdmin(data))
+		history.push(redirect)
+	} catch (error) {
+		dispatch(authRequestFailed(error.message))
+	}
+}
 
 export const logOut = () => (dispatch) => {
 	localStorageService.removeAuthData()
@@ -149,21 +164,11 @@ export const logOut = () => (dispatch) => {
 	history.push('/')
 }
 
-// export const loadUsersList = () => async (dispatch) => {
-// 	dispatch(usersRequested())
-// 	try {
-// 		const { content } = await userService.getUser()
-// 		dispatch(usersReceved(content))
-// 	} catch (error) {
-// 		dispatch(usersRequestFailed(error.message))
-// 	}
-// }
-
-export const loadUser = () => async (dispatch) => {
+export const loadUsersList = () => async (dispatch) => {
 	dispatch(usersRequested())
 	try {
 		const { content } = await userService.getUser()
-		dispatch(usersReceved(content))
+		dispatch(usersRecieved(content))
 	} catch (error) {
 		dispatch(usersRequestFailed(error.message))
 	}
@@ -171,10 +176,12 @@ export const loadUser = () => async (dispatch) => {
 
 export const updateUser = (payload) => async (dispatch) => {
 	dispatch(userUpdateRequested())
+	// console.log('currentUser payload', payload)
+	delete payload._id
 	try {
-		const { content } = await userService.update(payload)
+		const { content } = await userService.updateUser(payload)
+		console.log('update user content', content)
 		dispatch(userUpdateSuccessed(content))
-		history.push(`/users/${content._id}`)
 	} catch (error) {
 		dispatch(userUpdateFailed(error.message))
 	}
@@ -186,6 +193,7 @@ export const getCurrentUserData = () => (state) => {
 		? state.users.entities.find((u) => u._id === state.users.auth.userId)
 		: null
 }
+
 export const getUserById = (userId) => (state) => {
 	if (state.users.entities) {
 		return state.users.entities.find((u) => u._id === userId)
@@ -198,7 +206,7 @@ export const getIsLogged = () => (state) => {
 }
 export const getDataStatus = () => (state) => state.users.dataLoaded
 export const getUsersLoadingStatus = () => (state) => state.users.isLoading
-export const getCurrentUserId = () => (state) => state.users.auth.userId
+export const getCurrentUser = () => (state) => state.users.currentUser
 export const getAuthErrors = () => (state) => state.users.error
 export const getIsAdmin = () => (state) => state.users.isAdmin
 

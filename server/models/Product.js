@@ -21,7 +21,6 @@ const schema = new Schema(
 		rate: { type: Number },
 		chapter: { type: String },
 		category: { type: String },
-		subcategory: { type: String },
 	},
 	{
 		timestamps: true,

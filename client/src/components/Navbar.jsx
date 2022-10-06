@@ -1,47 +1,40 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
-import authService from '../services/auth.service'
-import { getIsAdmin, getIsLogged, logOut } from '../store/users'
+import { getCurrentUser, logOut } from '../store/users'
 
-const Navbar = () => {
-	const isLogged = useSelector(getIsLogged())
-	const isAdmin = useSelector(getIsAdmin())
+const Navbar = ({ isAdmin, isLogged }) => {
+	const currentUser = useSelector(getCurrentUser())
+	// console.log('navbar currentUser', currentUser)
+	const [logged, setLogged] = useState({
+		isLogged,
+		isAdmin,
+	})
 	const dispatch = useDispatch()
 	const history = useHistory()
 
-	// console.log('isAdmin', isAdmin)
+	useEffect(() => {
+		setLogged((prev) => ({ ...prev, isAdmin, isLogged }))
+	}, [isAdmin, isLogged])
 
 	const handleLogOut = () => {
 		dispatch(logOut())
-		history.push('/ceramic')
+		setLogged((prev) => ({ ...prev, isAdmin: false, isLogged: false }))
+		history.push('/')
 	}
 
 	return (
-		<nav className='navbar bg-dark mb-3 sticky-top'>
-			<ul className='nav flex-row justify-content-between w-100'>
-				<div className='col d-flex flex-row'>
+		<nav className='navbar d-flex bg-dark mb-3 sticky-top'>
+			<ul className='nav d-flex justify-content-between w-100'>
+				<div className='col d-inline-flex'>
 					<li className='nav-item'>
 						<Link to='/' className='nav-link ' aria-current='page'>
 							Главная
 						</Link>
 					</li>
 					<li className='nav-item'>
-						<Link
-							to='/product/ceramics'
-							className='nav-link '
-							aria-current='page'
-						>
-							Керамика
-						</Link>
-					</li>
-					<li className='nav-item'>
-						<Link
-							to='/product/epoxide'
-							className='nav-link '
-							aria-current='page'
-						>
-							Эпоксидка
+						<Link to='/product/goods' className='nav-link ' aria-current='page'>
+							Каталог
 						</Link>
 					</li>
 					<li className='nav-item'>
@@ -60,7 +53,10 @@ const Navbar = () => {
 					) : (
 						<li className='nav-item'>
 							<Link to='/shcart' className='nav-link ' aria-current='page'>
-								<i className='bi bi-basket-fill' fill='white' />
+								<i
+									className='bi bi-cart-check-fill'
+									style={{ width: '60px', height: '60px' }}
+								></i>
 							</Link>
 						</li>
 					)}
@@ -71,7 +67,7 @@ const Navbar = () => {
 							aria-current='page'
 							onClick={handleLogOut}
 						>
-							{isLogged ? 'Выйти' : 'Войти'}
+							{currentUser ? currentUser.name : 'Войти'}
 						</Link>
 					</li>
 				</div>

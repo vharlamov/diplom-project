@@ -79,8 +79,8 @@ router.post('/signInWithPassword', [
 
 			const { email, password } = req.body
 			const existUser = await User.findOne({ email })
-			// console.log('finded user', existUser)
 
+			// console.log('auth login data', existUser)
 			if (!existUser) {
 				return res.status(400).json({
 					error: {
@@ -103,14 +103,13 @@ router.post('/signInWithPassword', [
 
 			const tokens = tokenService.generate({ _id: existUser._id })
 			isAdmin = existUser.isAdmin
-			// console.log('auth route isAdmin', isAdmin)
 
 			await tokenService.save(existUser._id, tokens.refreshToken)
 
 			res.status(200).send({
 				...tokens,
-				isAdmin: isAdmin,
-				userId: existUser._id,
+				_id: existUser._id,
+				user: existUser,
 			})
 		} catch (error) {
 			res.status(500).json({
@@ -127,9 +126,7 @@ function isTokenInvalid(data, dbToken) {
 router.post('/token', async (req, res) => {
 	try {
 		const { refresh_token: refreshToken } = req.body
-
 		const data = tokenService.validateRefresh(refreshToken)
-
 		const dbToken = await tokenService.findToken(refreshToken)
 
 		if (isTokenInvalid(data, dbToken)) {
@@ -138,7 +135,7 @@ router.post('/token', async (req, res) => {
 			})
 		}
 
-		const tokens = await tokenService.generate({
+		const tokens = tokenService.generate({
 			id: dbToken.user.toString(),
 		})
 
@@ -151,14 +148,27 @@ router.post('/token', async (req, res) => {
 	}
 })
 
-router.post('/proof', (req, res) => {
-	res.status(200).json({ isAdmin: isAdmin })
-	console.log('proof', isAdmin)
+router.post('/proof', async (req, res) => {
+	isAdmin = false
+
+	try {
+		if (req.body.token) {
+			const adminProof = await tokenService.validateAdmin(req.body.token)
+			isAdmin = adminProof.isAdmin
+			res.status(200).send(adminProof)
+			// console.log(adminProof)
+		}
+	} catch (e) {
+		res.status(500).json({
+			message: 'На сервере произошла ошибка (admin proof). Попробуйте позже.',
+		})
+	}
 })
 
 router.post('/logout', (req, res) => {
 	isAdmin = false
 	// console.log('logout', isAdmin)
+	res.status(200).json({ isAdmin })
 })
 
 module.exports = router

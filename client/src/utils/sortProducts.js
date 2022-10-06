@@ -1,44 +1,36 @@
 export default function sortProducts(products, data, maxPrice) {
-	console.log('input sort config', data)
 	let result = [...products]
 
-	if (data.chapter !== 'all' && data.chapter !== 'all') {
+	if (data.chapter !== 'all') {
 		result = sortByChapter(result, data.chapter)
-		console.log('chapter', data.chapter, result)
 	}
 
 	if (data.category !== 'all' && data.category !== '') {
 		result = sortByCategory(result, data.category)
-		console.log('category', data.category, result)
-	}
-	// console.log('sortProducts', result)
-
-	if (data.subcategory.length) {
-		result = sortBySubcategory(result, data.subcategory)
-		console.log('subcategory', data.subcategory, result)
+		// console.log('category', data.category, result)
 	}
 
 	if (data.inStock) {
 		result = sortByInStock(result)
-		console.log('inStock', data.inStock, result)
+		// console.log('inStock', data.inStock, result)
 	}
 
-	if (data.priceCrop < maxPrice) {
-		result = sortByPriceCrop(result, data.priceCrop)
-		console.log('priceCrop', data.priceCrop, result)
+	if (data.price < maxPrice) {
+		result = sortByPriceCrop(result, data.price)
+		// console.log('priceCrop', data.price, result)
 	}
 
 	if (data.discount) {
 		result = sortByDiscount(result)
-		console.log('discount', data.discount, result)
+		// console.log('discount', data.discount, result)
 	}
 
 	if (data.priceOrder !== 'none') {
 		result = sortByPriceOrder(result, data.priceOrder)
-		console.log('priceOrder', data.priceOrder, result)
+		// console.log('priceOrder', data.priceOrder, result)
 	}
 
-	console.log('sortProducts', result)
+	// console.log('sortProducts', result)
 	return result
 }
 
@@ -63,7 +55,6 @@ function sortByInStock(list) {
 }
 
 function sortByPriceCrop(list, value) {
-	console.log('function priceCrop', value)
 	return list.filter((i) => i.price <= value)
 }
 

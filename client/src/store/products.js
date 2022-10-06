@@ -38,6 +38,12 @@ const productsSlice = createSlice({
 			state.entities[
 				state.entities.findIndex((e) => e._id === action.payload._id)
 			] = action.payload
+			console.log(
+				'productUpdated',
+				state.entities[
+					state.entities.findIndex((e) => e._id === action.payload._id)
+				]
+			)
 		},
 	},
 })
@@ -74,7 +80,7 @@ export const createProduct = (payload) => async (dispatch) => {
 	dispatch(addProductRequested())
 
 	try {
-		const data = await productService.createProduct(payload)
+		const { content } = await productService.createProduct(payload)
 		dispatch(productCreated(content))
 	} catch (e) {
 		dispatch(removeProductReqFailed(e))
@@ -97,7 +103,6 @@ export const updateProduct = (id, payload) => async (dispatch) => {
 
 	try {
 		const { content } = await productService.editProduct(id, payload)
-		console.log('updateProduct data', data)
 		dispatch(productUpdated(content))
 	} catch (e) {
 		dispatch(updateProductReqFailed(e.message))
@@ -136,5 +141,6 @@ export const getProductsByCat = (payload) => (state) => {
 export const getDataStatus = () => (state) => state.products.dataLoaded
 export const getProductsLoadingStatus = () => (state) =>
 	state.products.isLoading
+export const getError = () => (state) => state.products.error
 
 export default productsReducer

@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose')
 
+const orderSchema = new Schema({ type: String })
+
 const schema = new Schema(
 	{
 		name: {
@@ -19,6 +21,7 @@ const schema = new Schema(
 			required: true,
 		},
 		phone: { type: String },
+		orders: [String],
 	},
 	{
 		timestamps: true,

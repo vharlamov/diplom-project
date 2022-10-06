@@ -57,7 +57,7 @@ const LoginForm = () => {
 		// console.log('history location state', history.location.state)
 		const redirect = history.location.state
 			? history.location.state.from.pathname
-			: '/'
+			: '/product/goods'
 
 		dispath(login({ payload: data, redirect }))
 		// const isAdmin = await auth.proof()

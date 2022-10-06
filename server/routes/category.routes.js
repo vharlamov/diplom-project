@@ -6,8 +6,6 @@ const auth = require('../middleware/auth.middleware')
 router
 	.route('/')
 	.get(async (req, res) => {
-		console.log('server category get')
-
 		try {
 			const list = await Category.find()
 			res.status(200).send(list)
@@ -28,6 +26,31 @@ router
 		}
 	})
 
-router.delete('/:id', auth, async (req, res) => {})
+router.delete('/:id', auth, async (req, res) => {
+	try {
+		const { id } = req.params
+		const category = await Category.findById(id)
+		await category.remove()
+		res.status(200).send(category)
+	} catch (error) {
+		res.status(500).json({
+			message: 'На сервере произошла ошибка (category remove)',
+		})
+	}
+})
+
+router.patch('/:id', auth, async (req, res) => {
+	try {
+		const { id } = req.params
+		await Category.updateOne({ _id: id }, { name: req.body.name })
+		const category = await Category.findById(id)
+		// console.log('Server patched category', category)
+		res.status(200).send(category)
+	} catch (e) {
+		res.status(500).json({
+			message: 'На сервере произошла ошибка (category update)',
+		})
+	}
+})
 
 module.exports = router

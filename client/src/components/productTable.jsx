@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import config from '../config.json'
 import Table from './common/table/table'
 
 const ProductTable = ({ products }) => {
+	useEffect(() => {
+		console.log('product table', products)
+	}, [products])
 	const columns = {
 		image: {
 			path: 'image',

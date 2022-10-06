@@ -3,84 +3,62 @@ import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import imageService from '../services/imageService'
 import { getCategories } from '../store/categories'
+import { getChapters } from '../store/chapters'
 import { getProductsList } from '../store/products'
-import { getSubcategories } from '../store/subcategories'
 import sortProducts from '../utils/sortProducts'
 import CheckBoxField from './common/form/checkBoxField'
 import RadioField from './common/form/radio.Field'
 import SelectField from './common/form/selectField'
 import SliderField from './common/form/sliderField'
 
-const SidePanel = ({ onSort, isAdmin }) => {
+const SidePanel = ({ onSort, isAdmin, products, price }) => {
 	const categories = useSelector(getCategories())
-	const subcategories = useSelector(getSubcategories())
-	const products = useSelector(getProductsList())
+	const chapters = useSelector(getChapters())
+	// console.log('side panel chapters', chapters)
 	const history = useHistory()
 	const initialSortData = {
-		priceCrop: getPricesMinMax().max,
+		price: price.max,
 		priceOrder: 'none',
 		inStock: false,
 		discount: false,
 		chapter: 'all',
 		category: 'all',
-		subcategory: [],
 	}
-	const [sortData, setSortData] = useState({ ...initialSortData })
+	const [sortData, setSortData] = useState(initialSortData)
 
-	const [formConfig, setFormConfig] = useState({
-		priceCrop: getPricesMinMax(),
-		priceOrder: 'none',
-		inStock: false,
-		discount: false,
-		chapter: [
-			{ name: 'Все', value: 'all' },
-			{ name: 'Керамика', value: 'ceramics' },
-			{ name: 'Эпоксидка', value: 'epoxide' },
-		],
-		category: 'all',
-		subcategories: [],
-	})
+	const initialConfig = {
+		price: sortData.price,
+		priceOrder: sortData.priceOrder,
+		inStock: sortData.inStock,
+		discount: sortData.discount,
+		chapter: sortData.chapter,
+		category: sortData.category,
+	}
+
+	const [formConfig, setFormConfig] = useState(initialConfig)
 
 	useEffect(() => {
-		setSortData((prev) => ({
-			...prev,
-			subcategories: getSubcategoriesOpts(),
-		}))
-	}, [sortData.category])
+		setFormConfig(sortData)
+	}, [sortData])
+
+	// useEffect(() => {
+	// 	console.log('Chapters in sidePanel', chapters)
+	// }, [])
 
 	function getCategoryOpts() {
 		const cats = categories.map((c) => ({
 			name: c.name,
 			value: c._id,
-			chapter: c.chapter,
 		}))
-		const cropedCats =
-			sortData.chapter !== 'all'
-				? cats.filter((c) => c.chapter === sortData.chapter)
-				: cats
-		// console.log('cropedCats', cropedCats)
-		return cropedCats
+		return cats
 	}
 
-	function getSubcategoriesOpts() {
-		const subcats = subcategories.map((s) => ({
-			name: s.name,
-			value: s._id,
+	function getChapterOpts() {
+		const chapts = chapters.map((c) => ({
+			name: c.name,
+			value: c._id,
 		}))
-		const category = categories.find((cat) => cat._id === sortData.category)
-
-		if (category) {
-			return category.subcategories.map((sid) =>
-				subcats.find((cat) => cat.value === sid)
-			)
-		}
-
-		return []
-	}
-
-	function getPricesMinMax() {
-		const prices = products.map((p) => p.price).sort((a, b) => a - b)
-		return { min: prices[0], max: prices[prices.length - 1] }
+		return chapts
 	}
 
 	const prodImages = () => {
@@ -96,7 +74,6 @@ const SidePanel = ({ onSort, isAdmin }) => {
 		const necessary = prodImages()
 		const { content } = await imageService.getImage()
 		const excess = content.filter((item) => !necessary.includes(item))
-		// console.log('excess', excess)
 
 		excess.forEach(async (e) => {
 			await imageService.removeImage(e)
@@ -105,19 +82,18 @@ const SidePanel = ({ onSort, isAdmin }) => {
 
 	const onChange = (target) => {
 		setSortData((prev) => ({ ...prev, [target.name]: target.value }))
-		// console.log('sortData', sortData)
 	}
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		const sortedList = sortProducts(products, sortData, getPricesMinMax().max)
-		onSort(sortedList)
-		// console.log('sortedList', sortedList)
+		onSort(sortData)
 	}
 
 	const handleReset = () => {
-		setSortData({ ...initialSortData })
-		onSort(products)
+		setSortData(initialSortData)
+		setFormConfig(initialConfig)
+		onSort(initialSortData)
+		console.log('reset config', formConfig)
 	}
 
 	const editCategory = () => {
@@ -129,12 +105,12 @@ const SidePanel = ({ onSort, isAdmin }) => {
 			<form onSubmit={handleSubmit}>
 				<div className='mb-3'>
 					<SliderField
-						value={sortData.priceCrop}
-						options={sortData.priceCrop}
-						minmax={formConfig.priceCrop}
-						defaultValue={formConfig.priceCrop.max}
+						value={sortData.price}
+						// options={formConfig.price}
+						minmax={price}
+						defaultValue={price.max}
 						onChange={onChange}
-						name='priceCrop'
+						name='price'
 					/>
 					<RadioField
 						options={[
@@ -160,32 +136,22 @@ const SidePanel = ({ onSort, isAdmin }) => {
 						label='Со скидкой'
 					/>
 					<hr />
-					{isAdmin && (
-						<SelectField
-							options={[
-								{ name: 'Все', value: 'all' },
-								{ name: 'Керамика', value: 'ceramics' },
-								{ name: 'Эпоксидка', value: 'epoxide' },
-							]}
-							onChange={onChange}
-							name='chapter'
-							defaultOption='Все'
-							label='Раздел'
-						/>
-					)}
+					<SelectField
+						options={getChapterOpts()}
+						onChange={onChange}
+						name='chapter'
+						defaultOption={{ name: 'Все', value: 'all' }}
+						label='Раздел'
+						value={sortData.chapter}
+					/>
+
 					<SelectField
 						options={getCategoryOpts()}
 						onChange={onChange}
 						name='category'
-						defaultOption='Все'
+						defaultOption={{ name: 'Все', value: 'all' }}
 						label='Категория'
-					/>
-					<SelectField
-						options={sortData.subcategories}
-						onChange={onChange}
-						name='subcategory'
-						defaultOption='Все'
-						label='Подкатегория'
+						value={sortData.category}
 					/>
 				</div>
 				<div className='row me-2 ms-2'>

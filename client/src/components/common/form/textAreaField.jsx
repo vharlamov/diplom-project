@@ -1,7 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TextAreaField = ({ label, name, value, onChange, error }) => {
+const TextAreaField = ({
+	label,
+	name,
+	value,
+	onChange,
+	error,
+	placeholder,
+}) => {
 	const handleChange = ({ target }) => {
 		onChange({ name: target.name, value: target.value })
 	}
@@ -19,6 +26,7 @@ const TextAreaField = ({ label, name, value, onChange, error }) => {
 					value={value}
 					onChange={handleChange}
 					className={getInputClasses()}
+					placeholder={placeholder && placeholder}
 				/>
 
 				{error && <div className='invalid-feedback '>{error}</div>}

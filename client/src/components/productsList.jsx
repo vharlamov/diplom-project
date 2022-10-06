@@ -6,17 +6,17 @@ const ProductsList = ({ product }) => {
 	const history = useHistory()
 	const [products, setProducts] = useState(product)
 	const [search, setSearch] = useState('')
+	const [filtered, setFiltered] = useState([])
 	const params = useParams()
 
 	useEffect(() => {
 		setProducts(product)
-		console.log('products list', products)
-	}, [product])
+		filterBySearch()
+	})
 
-	function chapterSort(productsList, chapter) {
-		if (!chapter) return productsList
-		return productsList.filter((p) => p.chapter === chapter)
-	}
+	useEffect(() => {
+		filterBySearch()
+	}, [search])
 
 	const handleAdd = () => {
 		history.push('/admin/add')
@@ -27,12 +27,12 @@ const ProductsList = ({ product }) => {
 	}
 
 	const filterBySearch = () => {
-		const filtered = search
-			? products.filter(
-					(p) => p.title.toLowerCase().indexOf(search.toLowerCase()) !== -1
-			  )
+		const filtrd = search
+			? products.filter((p) => {
+					return p.title.toLowerCase().indexOf(search.toLowerCase(), 0) !== -1
+			  })
 			: products
-		return filtered
+		setFiltered(filtrd)
 	}
 
 	return (
@@ -46,7 +46,7 @@ const ProductsList = ({ product }) => {
 				/>
 			</div>
 
-			<ProductTable products={filterBySearch()} />
+			<ProductTable products={filtered} />
 			<button className='btn btn-primary ' onClick={handleAdd}>
 				Добавить товар
 			</button>

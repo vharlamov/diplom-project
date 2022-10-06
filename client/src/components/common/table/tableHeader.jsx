@@ -13,6 +13,9 @@ const TableHeader = ({ columns }) => {
 								: undefined
 						}
 						{...{ role: columns[column].path && 'button' }}
+						className={
+							columns[column].class ? columns[column].class : 'p-1 mx-0'
+						}
 						scope='col'
 					>
 						{columns[column].name}

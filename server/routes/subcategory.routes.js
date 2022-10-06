@@ -4,8 +4,6 @@ const router = express.Router()
 const auth = require('../middleware/auth.middleware')
 
 router.get('/', async (req, res) => {
-	console.log('server subcategory get')
-
 	try {
 		const list = await Subcategory.find()
 		res.status(200).send(list)

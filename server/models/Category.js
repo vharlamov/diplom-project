@@ -6,11 +6,6 @@ const schema = new Schema(
 			type: String,
 			required: true,
 		},
-		chapter: {
-			type: String,
-			required: true,
-		},
-		subcategories: [{ type: Schema.Types.ObjectId, ref: 'subcategories' }],
 	},
 	{
 		timestamps: true,

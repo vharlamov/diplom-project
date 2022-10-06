@@ -28,8 +28,8 @@ const authService = {
 	},
 
 	proof: async () => {
-		const { data } = await httpAuth.post('proof')
-		console.log('proof data', data)
+		const token = localStorageService.getRefreshToken()
+		const { data } = await httpAuth.post('proof', { token })
 
 		return data
 	},

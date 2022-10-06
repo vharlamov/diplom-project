@@ -8,9 +8,10 @@ const SelectField = ({
 	options,
 	error,
 	name,
+	acttype,
 }) => {
 	const handleChange = ({ target }) => {
-		onChange({ name: target.name, value: target.value })
+		onChange({ name: target.name, value: target.value, type: acttype })
 	}
 	const getInputClasses = () => {
 		return 'form-select' + (error ? ' is-invalid' : '')
@@ -25,8 +26,8 @@ const SelectField = ({
 			: options
 
 	return (
-		<div className='mb-4 me-2'>
-			<label htmlFor='validationCustom04' className='form-label'>
+		<div className='mb-2'>
+			<label htmlFor='validationCustom04' className='form-label mb-0'>
 				{label}
 			</label>
 			<select

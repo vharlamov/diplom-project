@@ -20,7 +20,12 @@ const TableBody = ({ data, columns }) => {
 			{data.map((item) => (
 				<tr key={item._id}>
 					{Object.keys(columns).map((column) => (
-						<td key={column} className='col-2'>
+						<td
+							key={column}
+							className={
+								columns[column].class ? columns[column].class : 'col-2 ms-0'
+							}
+						>
 							{renderContent(item, column)}
 						</td>
 					))}

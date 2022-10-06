@@ -45,10 +45,10 @@ router.patch('/:id', auth, async (req, res) => {
 		const { id } = req.params
 		const product = await Product.findByIdAndUpdate(id, req.body)
 		res.status(200).send(product)
-		console.log('product udated', product)
+		// console.log('product updated body', req.body)
 	} catch (e) {
 		res.status(500).json({
-			message: 'На сервере произошла ошибка (product delete)',
+			message: 'На сервере произошла ошибка (product update)',
 		})
 	}
 })

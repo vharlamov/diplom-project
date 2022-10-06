@@ -45,14 +45,13 @@ class TokenService {
 		}
 	}
 
-	async validateAdmin(accessToken) {
+	async validateAdmin(refreshToken) {
 		try {
-			const token = await Token.findOne({ accessToken })
-			const user = await User.findOne({ user: token.user })
-			console.log('user name', user.name)
-			return user.isAdmin
+			const token = await Token.findOne({ refreshToken })
+			const user = await User.findOne({ _id: token.user })
+			return user
 		} catch (e) {
-			return null
+			return false
 		}
 	}
 

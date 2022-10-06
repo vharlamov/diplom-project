@@ -15,6 +15,7 @@ import {
 import { useHistory, useParams } from 'react-router-dom'
 import imageService from '../services/imageService'
 import config from '../config.json'
+import { getChapters } from '../store/chapters'
 
 const initialData = {
 	_id: '',
@@ -27,7 +28,6 @@ const initialData = {
 	sales: 0,
 	chapter: '',
 	category: '',
-	subcategory: '',
 	images: [],
 	rate: 0,
 }
@@ -35,6 +35,7 @@ const initialData = {
 const ProductForm = () => {
 	const history = useHistory()
 	const params = useParams()
+	const chapters = useSelector(getChapters())
 	const dispatch = useDispatch()
 	const [errors, setError] = useState({})
 	const [data, setData] = useState(initialData)
@@ -51,29 +52,36 @@ const ProductForm = () => {
 		subcategories: [],
 	})
 
-	const currentProduct = useSelector(getProductById(params.id))
+	const currentProduct = useSelector(getProductById(params.edit))
 	// console.log('currentProduct', currentProduct)
 
 	useEffect(() => {
 		if (currentProduct) {
 			setData(currentProduct)
 		}
+		console.log('product form current', currentProduct)
 	}, [])
 
-	const chapters = ['ceramics', 'epoxide', 'education']
-	const chaptersList = chapters.map((ch) => ({ label: ch }))
+	// const chapters = ['ceramics', 'epoxide', 'education']
+	const getChaptersOpts = () => {
+		const chapts = chapters.map((ch) => {
+			const { name, _id } = ch
+			return { name, value: _id }
+		})
+		return chapts
+	}
 
 	const categories = useSelector(getCategories()) || []
 
 	function getCategoryOpts() {
-		const cats = categories.map((c) => ({
-			name: c.name,
-			value: c._id,
-			chapter: c.chapter,
-		}))
-		const cropedCats = cats.filter((c) => c.chapter === data.chapter)
+		console.log('getCategoryOpts', categories)
+		const cats = categories.map((c) => {
+			const { name, _id } = c
+			return { name, value: c._id }
+		})
+		// const cropedCats = cats.filter((c) => c.chapter === data.chapter)
 		// console.log('cropedCats', cropedCats)
-		return cropedCats
+		return cats
 	}
 
 	// const catsList = cats.map((c) => ({
@@ -81,44 +89,14 @@ const ProductForm = () => {
 	// 	value: c._id,
 	// }))
 
-	const subcategories = useSelector(getSubcategories()) || []
-
-	useEffect(() => {
-		if (data.category !== 'all') {
-			setFormConfig((prev) => ({
-				...prev,
-				subcategories: getSubcategoriesOpts(),
-			}))
-		}
-	}, [data.category])
-
-	const subcatsList = () => {
-		const subcatsIds = data.category
-			? categories.find((cat) => cat._id === data.category).subcategories
-			: []
-
-		const subcatItems = subcatsIds
-			.map((sid) => subcats.find((s) => s._id === sid))
-			.map((s) => ({ label: s.name, value: s._id }))
-
-		return subcatItems
-	}
-
-	function getSubcategoriesOpts() {
-		const subcats = subcategories.map((s) => ({
-			name: s.name,
-			value: s._id,
-		}))
-		const category = categories.find((cat) => cat._id === data.category)
-
-		if (category) {
-			return category.subcategories.map((sid) =>
-				subcats.find((cat) => cat.value === sid)
-			)
-		}
-
-		return []
-	}
+	// useEffect(() => {
+	// 	if (data.category !== 'all') {
+	// 		setFormConfig((prev) => ({
+	// 			...prev,
+	// 			subcategories: getSubcategoriesOpts(),
+	// 		}))
+	// 	}
+	// }, [data.category])
 
 	useEffect(() => {
 		setData((prev) => ({ ...prev, status: data.quantity ? 1 : 0 }))
@@ -144,6 +122,7 @@ const ProductForm = () => {
 		const imgs = [...data.images].filter((image) => image !== img)
 
 		setData((prev) => ({ ...prev, images: imgs }))
+		imageService.removeImage(img)
 		console.log('delete image', images)
 	}
 
@@ -154,7 +133,8 @@ const ProductForm = () => {
 		if (numberFields.includes(target.name)) {
 			value = +value
 		} else if (target.name === 'category') {
-			setData((prev) => ({ ...prev, subcategory: '' }))
+			console.log('form target', target)
+			setData((prev) => ({ ...prev, category: '' }))
 		}
 
 		setData((prev) => ({ ...prev, [target.name]: value }))
@@ -164,13 +144,16 @@ const ProductForm = () => {
 		const newData = { ...data }
 
 		newData.images = data.images.concat(images)
+		// console.log('images', newData.images)
 		const id = newData._id
 		delete newData._id
 
 		if (currentProduct) {
 			dispatch(updateProduct(id, newData))
+			console.log('handleSubmit update')
 		} else {
 			dispatch(createProduct(newData))
+			console.log('handleSubmit create')
 		}
 
 		history.push('/admin')
@@ -284,11 +267,7 @@ const ProductForm = () => {
 							defaultOption={{ name: 'Все', value: 'all' }}
 							label='Раздел'
 							name='chapter'
-							options={[
-								{ name: 'Все', value: 'all' },
-								{ name: 'Керамика', value: 'ceramics' },
-								{ name: 'Эпоксидка', value: 'epoxide' },
-							]}
+							options={getChaptersOpts()}
 							value={data.chapter}
 							onChange={handleChange}
 							error={errors.chapter}
@@ -301,15 +280,6 @@ const ProductForm = () => {
 							value={data.category}
 							onChange={handleChange}
 							error={errors.category}
-						/>
-						<SelectField
-							defaultOption={{ name: 'Все', value: 'all' }}
-							label='Подкатегория'
-							name='subcategory'
-							options={formConfig.subcategories}
-							value={data.subcategory}
-							onChange={handleChange}
-							error={errors.subcategory}
 						/>
 					</div>
 				</form>
