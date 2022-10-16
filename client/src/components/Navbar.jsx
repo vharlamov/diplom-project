@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { getCurrentUser, logOut } from '../store/users'
+import UserMenu from './userMenu'
 
 const Navbar = ({ isAdmin, isLogged }) => {
 	const currentUser = useSelector(getCurrentUser())
@@ -24,7 +25,7 @@ const Navbar = ({ isAdmin, isLogged }) => {
 	}
 
 	return (
-		<nav className='navbar d-flex bg-dark mb-3 sticky-top'>
+		<nav className='navbar d-flex bg-dark mb-3 sticky-top h'>
 			<ul className='nav d-flex justify-content-between w-100'>
 				<div className='col d-inline-flex'>
 					<li className='nav-item'>
@@ -53,22 +54,33 @@ const Navbar = ({ isAdmin, isLogged }) => {
 					) : (
 						<li className='nav-item'>
 							<Link to='/shcart' className='nav-link ' aria-current='page'>
-								<i
+								{/* <i
 									className='bi bi-cart-check-fill'
 									style={{ width: '60px', height: '60px' }}
-								></i>
+								></i> */}
+								Корзина
 							</Link>
 						</li>
 					)}
-					<li className='nav-item'>
-						<Link
-							to={isLogged ? '/logout' : '/login'}
-							className='nav-link '
-							aria-current='page'
-							onClick={handleLogOut}
-						>
-							{currentUser ? currentUser.name : 'Войти'}
-						</Link>
+					<li className='nav-item me-5'>
+						{currentUser ? (
+							<UserMenu
+								userName={currentUser.name}
+								className='nav-link '
+								aria-current='page'
+								handleLogOut={handleLogOut}
+								isAdmin={isAdmin}
+							/>
+						) : (
+							<Link
+								to='/login'
+								className='nav-link '
+								aria-current='page'
+								onClick={handleLogOut}
+							>
+								Войти
+							</Link>
+						)}
 					</li>
 				</div>
 			</ul>

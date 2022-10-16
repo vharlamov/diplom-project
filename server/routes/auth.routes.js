@@ -64,6 +64,7 @@ router.post('/signInWithPassword', [
 	check('email', 'Некорректный email').normalizeEmail().isEmail(),
 	check('password', 'Пароль не может быть пустым').exists(),
 	async (req, res) => {
+		console.log('login request', req.body)
 		try {
 			const errors = validationResult(req)
 

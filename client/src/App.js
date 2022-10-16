@@ -1,21 +1,25 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Redirect, Route, Switch } from 'react-router-dom'
-import ProtectedRoute from './components/common/protectedRoute'
-import AppLoader from './components/hoc/appLoader'
-import LogOut from './components/logOut'
-import Navbar from './components/Navbar'
-import AdminPage from './pages/adminPage'
-import ChangeCategory from './pages/changeCategory'
-import Login from './pages/login'
-import MainPage from './pages/mainPage'
-import orderPage from './pages/orderPage'
-import ProductPage from './pages/productPage'
-import ShoppingCart from './pages/shcartPage'
-import UserPage from './pages/userPage'
-import authService from './services/auth.service'
-import { getProductsList } from './store/products'
-import { getCurrentUser, getIsAdmin, getIsLogged } from './store/users'
+import { Route, Switch } from 'react-router-dom'
+import ProtectedRoute from '../../client/src/components/common/protectedRoute'
+import AppLoader from '../../client/src/components/hoc/appLoader'
+import LogOut from '../../client/src/components/logOut'
+import Navbar from '../../client/src/components/Navbar'
+import AdminPage from '../../client/src/pages/adminPage'
+import ChangeCategory from '../../client/src/pages/changeCategory'
+import Login from '../../client/src/pages/login'
+import MainPage from '../../client/src/pages/mainPage'
+import orderPage from '../../client/src/pages/orderPage'
+import ProductPage from '../../client/src/pages/productPage'
+import ShoppingCart from '../../client/src/pages/shcartPage'
+import UserPage from '../../client/src/pages/userPage'
+import authService from '../../client/src/services/auth.service'
+import { getProductsList } from '../../client/src/store/products'
+import {
+	getCurrentUser,
+	getIsAdmin,
+	getIsLogged,
+} from '../../client/src/store/users'
 
 function App() {
 	const isAdmin = useSelector(getIsAdmin())

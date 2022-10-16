@@ -29,13 +29,13 @@ const ProductCard = ({ data, chapter, className, handleShCart }) => {
 				</div>
 				<div className='card-footer row'>
 					<button
-						className='btn-sm btn-primary mb-2'
+						className='btn btn-sm btn-primary mb-2'
 						onClick={handleToProdPage}
 					>
 						Подробнее
 					</button>
 					<button
-						className='btn-sm btn-success'
+						className='btn btn-sm btn-success'
 						onClick={() => handleShCart(data._id, 1)}
 					>
 						В корзину
