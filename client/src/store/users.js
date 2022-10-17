@@ -108,7 +108,6 @@ export const login =
 
 		try {
 			const data = await authService.login({ email, password })
-			console.log('auth data', data)
 
 			dispatch(authRequestSuccess(data.user))
 			dispatch(authAdmin(data.user))

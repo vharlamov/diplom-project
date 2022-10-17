@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import config from '../config.json'
+import config from '../config.js'
 import Table from './common/table/table'
 
 const ProductTable = ({ products }) => {
-	useEffect(() => {
-		console.log('product table', products)
-	}, [products])
+	useEffect(() => {}, [products])
 	const columns = {
 		image: {
 			path: 'image',
 			name: '',
 			component: (product) => (
 				<img
-					src={config.apiEndpoint + 'uploads/' + product.images[0]}
+					src={config + 'uploads/' + product.images[0]}
 					className='img-thumbnail col-12'
 					// style={{ height: 50 }}
 				/>

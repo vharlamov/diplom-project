@@ -5,7 +5,6 @@ import TextAreaField from './common/form/textAreaField'
 import TextField from './common/form/textField'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCategories } from '../store/categories'
-import { getSubcategories } from '../store/subcategories'
 import {
 	createProduct,
 	getProductById,
@@ -14,7 +13,7 @@ import {
 } from '../store/products'
 import { useHistory, useParams } from 'react-router-dom'
 import imageService from '../services/imageService'
-import config from '../config.json'
+import config from '../config.js'
 import { getChapters } from '../store/chapters'
 
 const initialData = {
@@ -40,7 +39,7 @@ const ProductForm = () => {
 	const [errors, setError] = useState({})
 	const [data, setData] = useState(initialData)
 	const [images, setImages] = useState([])
-	const URL = config.apiEndpoint + 'uploads/'
+	const URL = config + 'uploads/'
 
 	const [formConfig, setFormConfig] = useState({
 		chapter: [
@@ -53,16 +52,13 @@ const ProductForm = () => {
 	})
 
 	const currentProduct = useSelector(getProductById(params.edit))
-	// console.log('currentProduct', currentProduct)
 
 	useEffect(() => {
 		if (currentProduct) {
 			setData(currentProduct)
 		}
-		console.log('product form current', currentProduct)
 	}, [])
 
-	// const chapters = ['ceramics', 'epoxide', 'education']
 	const getChaptersOpts = () => {
 		const chapts = chapters.map((ch) => {
 			const { name, _id } = ch
@@ -74,29 +70,12 @@ const ProductForm = () => {
 	const categories = useSelector(getCategories()) || []
 
 	function getCategoryOpts() {
-		console.log('getCategoryOpts', categories)
 		const cats = categories.map((c) => {
 			const { name, _id } = c
 			return { name, value: c._id }
 		})
-		// const cropedCats = cats.filter((c) => c.chapter === data.chapter)
-		// console.log('cropedCats', cropedCats)
 		return cats
 	}
-
-	// const catsList = cats.map((c) => ({
-	// 	label: c.name,
-	// 	value: c._id,
-	// }))
-
-	// useEffect(() => {
-	// 	if (data.category !== 'all') {
-	// 		setFormConfig((prev) => ({
-	// 			...prev,
-	// 			subcategories: getSubcategoriesOpts(),
-	// 		}))
-	// 	}
-	// }, [data.category])
 
 	useEffect(() => {
 		setData((prev) => ({ ...prev, status: data.quantity ? 1 : 0 }))
@@ -109,7 +88,6 @@ const ProductForm = () => {
 			imgs.push(img)
 			setImages(imgs)
 		} else if (action === 'delete') {
-			// const { content } = await imageService.getImage()
 			setImages((prev) => ({
 				...prev,
 				images: imgs.filter((image) => image !== img),
@@ -123,7 +101,6 @@ const ProductForm = () => {
 
 		setData((prev) => ({ ...prev, images: imgs }))
 		imageService.removeImage(img)
-		console.log('delete image', images)
 	}
 
 	const handleChange = (target) => {
@@ -133,7 +110,6 @@ const ProductForm = () => {
 		if (numberFields.includes(target.name)) {
 			value = +value
 		} else if (target.name === 'category') {
-			console.log('form target', target)
 			setData((prev) => ({ ...prev, category: '' }))
 		}
 
@@ -144,16 +120,13 @@ const ProductForm = () => {
 		const newData = { ...data }
 
 		newData.images = data.images.concat(images)
-		// console.log('images', newData.images)
 		const id = newData._id
 		delete newData._id
 
 		if (currentProduct) {
 			dispatch(updateProduct(id, newData))
-			console.log('handleSubmit update')
 		} else {
 			dispatch(createProduct(newData))
-			console.log('handleSubmit create')
 		}
 
 		history.push('/admin')

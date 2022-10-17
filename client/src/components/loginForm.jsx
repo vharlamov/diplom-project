@@ -3,9 +3,8 @@ import { validator } from '../utils/ validator'
 import TextField from '../components/common/form/textField'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAuthErrors, login } from '../store/users'
+import { getAuthErrors, login, proofAdmin } from '../store/users'
 import CheckBoxField from './common/form/checkBoxField'
-import auth from '../services/auth.service'
 
 const LoginForm = () => {
 	const [data, setData] = useState({
@@ -54,14 +53,12 @@ const LoginForm = () => {
 		e.preventDefault()
 		const isValid = validate()
 		if (!isValid) return
-		// console.log('history location state', history.location.state)
 		const redirect = history.location.state
 			? history.location.state.from.pathname
 			: '/product/goods'
 
 		dispath(login({ payload: data, redirect }))
-		// const isAdmin = await auth.proof()
-		// console.log('isAdmin', isAdmin)
+		dispath(proofAdmin())
 	}
 
 	return (

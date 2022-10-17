@@ -29,23 +29,18 @@ const UserProductWall = ({ products, handleShCart }) => {
 
 	return (
 		<div className='container'>
-			<div className='row'>
+			<div className='d-flex flex-row'>
 				<input
 					type='text'
 					onChange={handleSearch}
-					className='form-control'
+					className='form-control mb-2 me-3 me-'
 					placeholder='Искать по названию'
 				/>
 			</div>
 			<div className='container d-flex row  w-100 px-2'>
 				<div className='d-flex row col-12 gx-2'>
 					{filterBySearch().map((p, i) => (
-						<ProductCard
-							data={p}
-							key={i}
-							className='card mb-3 shadow-sm'
-							handleShCart={handleShCart}
-						/>
+						<ProductCard data={p} key={i} handleShCart={handleShCart} />
 					))}
 				</div>
 			</div>

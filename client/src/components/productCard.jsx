@@ -1,11 +1,11 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
-import config from '../config.json'
+import config from '../config.js'
 import { updateShcart } from '../store/shopCart'
 
-const ProductCard = ({ data, chapter, className, handleShCart }) => {
-	const URL = config.apiEndpoint + 'uploads/'
+const ProductCard = ({ data, handleShCart }) => {
+	const URL = config + 'uploads/'
 	const dispatch = useDispatch()
 	const history = useHistory()
 
@@ -18,8 +18,8 @@ const ProductCard = ({ data, chapter, className, handleShCart }) => {
 	}
 
 	return (
-		<div className='col-4'>
-			<div className={className}>
+		<div className='card-group col-4 shadow-sm'>
+			<div className='card mb-3'>
 				<img src={URL + data.images[0]} alt='Фото' className='card-img-top' />
 				<div className='card-body'>
 					<h5 className='card-title'>{data.title}</h5>
@@ -35,7 +35,7 @@ const ProductCard = ({ data, chapter, className, handleShCart }) => {
 						Подробнее
 					</button>
 					<button
-						className='btn btn-sm btn-success'
+						className='btn btn-success'
 						onClick={() => handleShCart(data._id, 1)}
 					>
 						В корзину

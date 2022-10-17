@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
-import config from '../../../config.json'
+import config from '../../../config.js'
 import imageService from '../../../services/imageService'
 
-const URL = config.apiEndpoint + 'uploads/'
+const URL = config + 'uploads/'
 
 const ImgsLoadField = ({ label, value, onChange, error }) => {
 	const [files, setFiles] = useState([])

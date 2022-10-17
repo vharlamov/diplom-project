@@ -9,7 +9,6 @@ import {
 } from '../../store/products'
 import { getShopCart, loadShcart } from '../../store/shopCart'
 import { proofAdmin } from '../../store/users'
-// import { getUsersLoadingStatus, loadUsersList } from '../../store/users'
 
 const AppLoader = ({ children }) => {
 	const dispatch = useDispatch()

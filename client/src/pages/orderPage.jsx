@@ -4,7 +4,7 @@ import { getCurrentUser, updateUser } from '../store/users'
 import TableBody from '../components/common/table/tableBody'
 import { getProductsList } from '../store/products'
 import { useEffect, useState } from 'react'
-import config from '../config.json'
+import config from '../config.js'
 import TextAreaField from '../components/common/form/textAreaField'
 import {
 	createOrder,
@@ -12,6 +12,7 @@ import {
 	getOrdersList,
 	loadOrdersList,
 } from '../store/orders'
+import history from '../utils/history'
 
 const orderPage = () => {
 	const dispatch = useDispatch()
@@ -64,7 +65,7 @@ const orderPage = () => {
 			component: (product) => {
 				return (
 					<img
-						src={config.apiEndpoint + 'uploads/' + product.images[0]}
+						src={config + 'uploads/' + product.images[0]}
 						className='img-thumbnail col-12'
 						style={{ maxWidth: '90px' }}
 					/>
@@ -99,6 +100,10 @@ const orderPage = () => {
 		dispatch(createOrder(order))
 	}
 
+	const handleExit = () => {
+		history.push('/product/goods')
+	}
+
 	return (
 		<div className='container mt-5' style={{ maxWidth: '800px' }}>
 			<div className='row w-100%'>
@@ -130,7 +135,12 @@ const orderPage = () => {
 							<h5 className='mt-4 text-end'>Общая сумма {sum} руб.</h5>
 							<div className='d-flex  justify-content-end'>
 								<div className='d-flex'>
-									<button className='btn btn-secondary ms-2'>Выйти</button>
+									<button
+										className='btn btn-secondary ms-2'
+										onClick={handleExit}
+									>
+										Выйти
+									</button>
 
 									<button
 										className='btn btn-primary ms-2'

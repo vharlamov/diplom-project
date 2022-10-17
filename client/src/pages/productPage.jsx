@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductById } from '../store/products'
-import config from '../config.json'
+import config from '../config.js'
 import { useHistory } from 'react-router-dom'
 import { getShopCart, loadShcart, updateShcart } from '../store/shopCart'
 
 const ProductPage = ({ id }) => {
 	const dispatch = useDispatch()
 	const product = useSelector(getProductById(id))
-	const URL = config.apiEndpoint + 'uploads/'
+	const URL = config + 'uploads/'
 	const history = useHistory()
 	const shopCart = useSelector(getShopCart())
 	const [shcart, setShcart] = useState(shopCart)

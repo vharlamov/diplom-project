@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getShopCart, removeShcart, updateShcart } from '../store/shopCart'
-import config from '../config.json'
+import config from '../config.js'
 import _ from 'lodash'
 import { getProductsList } from '../store/products'
 import { Link } from 'react-router-dom'
@@ -45,7 +45,7 @@ const ShoppingCart = () => {
 				console.log('component', product)
 				return (
 					<img
-						src={config.apiEndpoint + 'uploads/' + product.images[0]}
+						src={config + 'uploads/' + product.images[0]}
 						className='img-thumbnail col-12'
 						style={{ maxWidth: '90px' }}
 					/>
@@ -134,6 +134,10 @@ const ShoppingCart = () => {
 		history.push('/order')
 	}
 
+	const handleExit = () => {
+		history.push('/product/goods')
+	}
+
 	return (
 		<div className='container mt-5' style={{ maxWidth: '800px' }}>
 			<div className='row w-100%'>
@@ -170,7 +174,12 @@ const ShoppingCart = () => {
 											Авторизоваться
 										</button>
 									) : null}
-									<button className='btn btn-secondary ms-2'>Выйти</button>
+									<button
+										className='btn btn-secondary ms-2'
+										onClick={handleExit}
+									>
+										Выйти
+									</button>
 
 									<button
 										className='btn btn-primary ms-2'
