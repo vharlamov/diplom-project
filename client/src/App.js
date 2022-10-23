@@ -20,6 +20,7 @@ import {
 	getIsAdmin,
 	getIsLogged,
 } from '../../client/src/store/users'
+import OrdersList from './components/ordersList'
 
 function App() {
 	const isAdmin = useSelector(getIsAdmin())
@@ -53,7 +54,7 @@ function App() {
 					/>
 					<Route path='/logout' component={LogOut} />
 					<Route path='/shcart' component={ShoppingCart} />
-					<Route path='/order' component={orderPage} />
+					<Route path='/order' component={OrdersList} />
 				</Switch>
 			</AppLoader>
 		</div>

@@ -60,7 +60,7 @@ app.post('/upload-profile-pic', auth, (req, res, next) => {
 	}).single('profile_pic')
 
 	upload(req, res, function (err) {
-		console.log('req.file', req.file)
+		// console.log('req.file', req.file)
 		if (req.fileValidationError) {
 			return res.send(req.fileValidationError)
 		} else if (!req.file) {

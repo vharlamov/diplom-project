@@ -1,21 +1,12 @@
 const express = require('express')
 const Order = require('../models/Order')
 const router = express.Router()
-const auth = require('../middleware/auth.middleware')
-const tokenService = require('../services/token.service')
 
 router.get('/', async (req, res) => {
-	const adminProof = await tokenService.validateAdmin(req.body.token)
-	isAdmin = adminProof.isAdmin
-	console.log('order request', req.body)
-
 	try {
-		if (isAdmin) {
-			const list = await Order.find()
-			res.status(200).send(list)
-			console.log('order get', list)
-		} else {
-		}
+		const list = await Order.find()
+		res.status(200).send(list)
+		// console.log('order get', list)
 	} catch (e) {
 		res.status(500).json({
 			message: 'На сервере произошла ошибка (order get)',

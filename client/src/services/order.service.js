@@ -4,11 +4,12 @@ const orderEndpoint = 'api/order/'
 
 const orderService = {
 	getOrder: async () => {
+		// console.log('order service', payload)
 		const { data } = await httpService.get(orderEndpoint)
 		return data
 	},
-	createOrder: async (paypoad) => {
-		const { data } = await httpService.post(orderEndpoint, paypoad)
+	createOrder: async (payload) => {
+		const { data } = await httpService.post(orderEndpoint, payload)
 		return data
 	},
 	updateOrder: async (id, payload) => {

@@ -1,8 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { loadOrdersList } from '../store/orders'
+import { getCurrentUser } from '../store/users'
 
 function UserMenu({ userName, handleLogOut, isAdmin }) {
 	const [show, setShow] = useState(false)
+	const history = useHistory()
+	const user = useSelector(getCurrentUser())
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(loadOrdersList())
+	}, [])
 
 	const toggleHandler = () => {
 		setShow((prev) => !prev)
@@ -11,6 +22,8 @@ function UserMenu({ userName, handleLogOut, isAdmin }) {
 
 	const handleOrders = () => {
 		toggleHandler()
+		dispatch(loadOrdersList(user.orders))
+		history.push('/order')
 	}
 
 	return (
