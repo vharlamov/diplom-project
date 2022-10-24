@@ -25,9 +25,10 @@ app.use('/api', routes)
 const PORT = process.env.PORT ?? 8080
 
 // console.log(process.env.NODE_ENV)
+app.use('/uploads', express.static('uploads'))
 
 if (process.env.NODE_ENV === 'production') {
-	app.use('/', express.static(path.join(__dirname, 'client')))
+	// app.use('/', express.static(path.join(__dirname, '/')))
 
 	const indexPath = path.join(__dirname, 'client', 'index.html')
 
@@ -47,8 +48,6 @@ const storage = multer.diskStorage({
 		)
 	},
 })
-
-app.use(express.static(__dirname))
 
 app.use(bodyParser.urlencoded({ extended: false, limit: '5mb' }))
 
