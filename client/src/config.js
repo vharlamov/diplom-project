@@ -3,4 +3,4 @@ const config = {
 	heroku: 'https://eshop-diplom.herokuapp.com/',
 }
 
-export default config.local
+export default config.heroku
