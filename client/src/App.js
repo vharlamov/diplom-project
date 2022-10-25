@@ -27,10 +27,12 @@ function App() {
 	const isLogged = useSelector(getIsLogged())
 	const prodList = useSelector(getProductsList())
 	const currentUser = useSelector(getCurrentUser())
-	// console.log('app currentUser', currentUser)
 
 	return (
-		<div className='container-fluid row-fluid d-flex flex-column mx-auto ms-0 me-0 h-100vh w-100vw'>
+		<div
+			className='container d-flex flex-column mx-auto h-100vh w-100vw'
+			style={{ maxWidth: '1000px', margin: '0 auto' }}
+		>
 			<AppLoader>
 				<Navbar
 					isAdmin={isAdmin}

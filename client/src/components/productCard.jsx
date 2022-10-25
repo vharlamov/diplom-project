@@ -18,7 +18,7 @@ const ProductCard = ({ data, handleShCart }) => {
 	}
 
 	return (
-		<div className='card-group col-4 shadow-sm'>
+		<div className='card-group col-lg-4 col-sm-12 col-xs-12 shadow-sm'>
 			<div className='card mb-3'>
 				<img src={URL + data.images[0]} alt='Фото' className='card-img-top' />
 				<div className='card-body'>

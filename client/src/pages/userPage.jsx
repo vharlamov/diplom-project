@@ -57,8 +57,8 @@ const UserPage = () => {
 	}
 
 	return (
-		<>
-			<div className='d-flex flex-row gap-4 h-100 w-100'>
+		<div className='container mx-0 px-0 w-100%' style={{ maxWidth: '966px' }}>
+			<div className='row row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-xs-1 mx-0 justify-content-center gx-2'>
 				<SidePanel
 					isAdmin={isAdmin}
 					onSort={onSort}
@@ -71,7 +71,7 @@ const UserPage = () => {
 					<UserProductWall products={sorted} handleShCart={handleShCart} />
 				)}
 			</div>
-		</>
+		</div>
 	)
 }
 

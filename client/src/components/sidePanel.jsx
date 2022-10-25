@@ -101,9 +101,9 @@ const SidePanel = ({ onSort, isAdmin, products, price }) => {
 	}
 
 	return (
-		<div className='container shadow col-3 max-width-600px mt-5vh bg-light'>
+		<div className='container shadow col-lg-3 col-md-3 col-sm-12 col-xs-12 mt-5vh me-0 ms-0 bg-light px-2 pe-lg-4 pe-md-4'>
 			<form onSubmit={handleSubmit}>
-				<div className='mb-3'>
+				<div className='row mx-0 mb-3'>
 					<SliderField
 						value={sortData.price}
 						// options={formConfig.price}
@@ -154,7 +154,7 @@ const SidePanel = ({ onSort, isAdmin, products, price }) => {
 						value={sortData.category}
 					/>
 				</div>
-				<div className='row me-2 ms-2'>
+				<div className='row mx-0'>
 					<button className='btn btn-primary mb-2' type='submit'>
 						Сортировать
 					</button>
