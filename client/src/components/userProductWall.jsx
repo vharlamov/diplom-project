@@ -28,7 +28,7 @@ const UserProductWall = ({ products, handleShCart }) => {
 	}
 
 	return (
-		<div className='container pe-0 ps-lg-2 ps-md-2 me-0 ms-0 col-lg-9 col-md-9 col-sm-12 col-xs-12'>
+		<div className='container pe-0 ps-lg-2 ps-md-2 ps-sm-0 ps-xs-0 me-0 ms-0 col-lg-9 col-md-9 col-sm-12 col-xs-12'>
 			<div className='d-flex flex-row justify-content-end'>
 				<input
 					type='text'
@@ -37,7 +37,7 @@ const UserProductWall = ({ products, handleShCart }) => {
 					placeholder='Искать по названию'
 				/>
 			</div>
-			<div className='row row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 justify-content-center w-100%'>
+			<div className='row row-cols-xs-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 justify-content-center mx-0 w-100%'>
 				{filterBySearch().map((p, i) => (
 					<ProductCard data={p} key={i} handleShCart={handleShCart} />
 				))}

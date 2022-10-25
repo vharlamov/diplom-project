@@ -26,7 +26,7 @@ const SelectField = ({
 			: options
 
 	return (
-		<div className='mb-2'>
+		<div className='mb-2  px-0'>
 			<label htmlFor='validationCustom04' className='form-label mb-0'>
 				{label}
 			</label>
