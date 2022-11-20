@@ -18,13 +18,21 @@ const ProductCard = ({ data, handleShCart }) => {
 	}
 
 	return (
-		<div className='card-group col-lg-4 col-sm-6 col-xs-12 shadow-sm'>
-			<div className='card mb-3'>
+		<div className='card-group col-lg-4 col-sm-6 col-xs-6 col shadow-sm'>
+			<div className='card mb-3 container'>
 				<img src={URL + data.images[0]} alt='Фото' className='card-img-top' />
 				<div className='card-body'>
 					<h5 className='card-title'>{data.title}</h5>
-					<p>{`${data.price} руб`}</p>
-					{data.discount ? <p>{`Скидка ${data.discount}%`}</p> : <p>&nbsp;</p>}
+					<div className='row justify-content-between'>
+						<p className='col'>{`${data.price} руб`}</p>
+						{data.discount ? (
+							<p className='col text-danger'>
+								<strong>{`–${data.discount}%`}</strong>
+							</p>
+						) : (
+							<p>&nbsp;</p>
+						)}
+					</div>
 					<p>{data.status ? 'Есть в наличии' : 'На заказ'}</p>
 				</div>
 				<div className='card-footer row'>

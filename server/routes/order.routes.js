@@ -2,11 +2,10 @@ const express = require('express')
 const Order = require('../models/Order')
 const router = express.Router()
 
-router.get('/', async (req, res) => {
+router.get('/:id?', async (req, res) => {
 	try {
 		const list = await Order.find()
 		res.status(200).send(list)
-		// console.log('order get', list)
 	} catch (e) {
 		res.status(500).json({
 			message: 'На сервере произошла ошибка (order get)',

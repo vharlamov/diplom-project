@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import SidePanel from '../components/sidePanel'
 import UserProductWall from '../components/userProductWall'
 import { getProductsList } from '../store/products'
 import { getShopCart, updateShcart } from '../store/shopCart'
-import { getCurrentUser, getIsAdmin } from '../store/users'
+import { getIsAdmin } from '../store/users'
 import sortProducts from '../utils/sortProducts'
 import ProductPage from './productPage'
 
@@ -15,12 +15,9 @@ const UserPage = () => {
 	const params = useParams()
 	const isAdmin = useSelector(getIsAdmin())
 	const shopCart = useSelector(getShopCart())
-	const currentUser = useSelector(getCurrentUser())
-	const history = useHistory()
 	const [product, setProduct] = useState(prodList)
 	const [sorted, setSorted] = useState(product)
 	const [shCart, setShCart] = useState(shopCart)
-	const [orders, setOrders] = useState(currentUser ? currentUser.orders : [])
 
 	useEffect(() => {
 		setProduct(prodList)
@@ -57,20 +54,20 @@ const UserPage = () => {
 	}
 
 	return (
-		<div className='container mx-0 px-0 w-100%' style={{ maxWidth: '966px' }}>
-			<div className='row row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-xs-1 mx-0 justify-content-center gx-2'>
-				<SidePanel
-					isAdmin={isAdmin}
-					onSort={onSort}
-					products={product}
-					price={getPricesMinMax()}
-				/>
-				{params.id ? (
-					<ProductPage id={params.id} handleShCart={handleShCart} />
-				) : (
+		<div className='container mx-0 px-0 w-100%' style={{ maxWidth: '955px' }}>
+			{!params.id ? (
+				<div className='row row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-xs-1 mx-0 justify-content-center gx-2'>
+					<SidePanel
+						isAdmin={isAdmin}
+						onSort={onSort}
+						products={product}
+						price={getPricesMinMax()}
+					/>
 					<UserProductWall products={sorted} handleShCart={handleShCart} />
-				)}
-			</div>
+				</div>
+			) : (
+				<ProductPage id={params.id} handleShCart={handleShCart} />
+			)}
 		</div>
 	)
 }

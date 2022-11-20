@@ -6,10 +6,16 @@ const EducationPage = () => {
 	const categories = useSelector(getCategories())
 
 	return (
-		<>
-			<h1>EducationPage</h1>
-			<p>{JSON.stringify(categories)}</p>
-		</>
+		<div className='container text-center w-100%'>
+			<div className='row w-100% m-0 position-absolute top-50 start-50 translate-middle'>
+				<div className='col align-self-center'>
+					<h1>
+						Обучения пока нет, <br />
+						но скоро будет! :)
+					</h1>
+				</div>
+			</div>
+		</div>
 	)
 }
 

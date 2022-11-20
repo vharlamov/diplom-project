@@ -6,7 +6,6 @@ import UserMenu from './userMenu'
 
 const Navbar = ({ isAdmin, isLogged }) => {
 	const currentUser = useSelector(getCurrentUser())
-	// console.log('navbar currentUser', currentUser)
 	const [logged, setLogged] = useState({
 		isLogged,
 		isAdmin,
@@ -25,63 +24,69 @@ const Navbar = ({ isAdmin, isLogged }) => {
 	}
 
 	return (
-		<nav className='navbar d-flex bg-dark mb-3 sticky-top h'>
-			<ul className='nav d-flex justify-content-between w-100'>
-				<div className='col d-inline-flex'>
-					<li className='nav-item'>
+		<nav className='navbar bg-dark mb-3 sticky-top'>
+			<ul className='nav row cols-sm-1 cols-md-2 text-center justify-content-between w-100'>
+				{/* Первая колонка из 3 линков */}
+				<div className='row col-md-6 col-sm-12 cols-3 justify-content-start'>
+					<li className='nav-item col-4'>
 						<Link to='/' className='nav-link ' aria-current='page'>
 							Главная
 						</Link>
 					</li>
-					<li className='nav-item'>
+					<li className='nav-item col-4'>
 						<Link to='/product/goods' className='nav-link ' aria-current='page'>
 							Каталог
 						</Link>
 					</li>
-					<li className='nav-item'>
+					<li className='nav-item col-4'>
 						<Link to='/education' className='nav-link ' aria-current='page'>
 							Обучение
 						</Link>
 					</li>
 				</div>
-				<div className='col d-flex flex-row justify-content-end'>
-					{isAdmin ? (
-						<li className='nav-item'>
-							<Link to='/admin' className='nav-link ' aria-current='page'>
-								Админка
-							</Link>
-						</li>
-					) : (
-						<li className='nav-item'>
-							<Link to='/shcart' className='nav-link ' aria-current='page'>
-								{/* <i
-									className='bi bi-cart-check-fill'
-									style={{ width: '60px', height: '60px' }}
-								></i> */}
-								Корзина
-							</Link>
-						</li>
-					)}
-					<li className='nav-item me-5'>
-						{currentUser ? (
-							<UserMenu
-								userName={currentUser.name}
-								className='nav-link '
-								aria-current='page'
-								handleLogOut={handleLogOut}
-								isAdmin={isAdmin}
-							/>
+				{/* вторая колонка из 2 линков */}
+				<div className='row  col-md-4 col-sm-12 cols-2 text-center justify-content-end'>
+					<div className='col-6'>
+						{isAdmin ? (
+							<li className='nav-item'>
+								<Link to='/admin' className='nav-link ' aria-current='page'>
+									Админка
+								</Link>
+							</li>
 						) : (
-							<Link
-								to='/login'
-								className='nav-link '
-								aria-current='page'
-								onClick={handleLogOut}
-							>
-								Войти
-							</Link>
+							<li className='nav-item'>
+								<Link to='/shcart' className='nav-link ' aria-current='page'>
+									<i
+										className='bi bi-cart-check-fill'
+										style={{ width: '60px', height: '60px' }}
+									></i>
+								</Link>
+							</li>
 						)}
-					</li>
+					</div>
+
+					<div className='col-6'>
+						<li className='nav-item me-5'>
+							{currentUser ? (
+								<UserMenu
+									userName={currentUser.name}
+									className='nav-link '
+									aria-current='page'
+									handleLogOut={handleLogOut}
+									isAdmin={isAdmin}
+								/>
+							) : (
+								<Link
+									to='/login'
+									className='nav-link '
+									aria-current='page'
+									onClick={handleLogOut}
+								>
+									Войти
+								</Link>
+							)}
+						</li>
+					</div>
 				</div>
 			</ul>
 		</nav>

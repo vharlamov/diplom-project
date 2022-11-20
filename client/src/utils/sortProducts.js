@@ -7,30 +7,24 @@ export default function sortProducts(products, data, maxPrice) {
 
 	if (data.category !== 'all' && data.category !== '') {
 		result = sortByCategory(result, data.category)
-		// console.log('category', data.category, result)
 	}
 
 	if (data.inStock) {
 		result = sortByInStock(result)
-		// console.log('inStock', data.inStock, result)
 	}
 
 	if (data.price < maxPrice) {
 		result = sortByPriceCrop(result, data.price)
-		// console.log('priceCrop', data.price, result)
 	}
 
 	if (data.discount) {
 		result = sortByDiscount(result)
-		// console.log('discount', data.discount, result)
 	}
 
 	if (data.priceOrder !== 'none') {
 		result = sortByPriceOrder(result, data.priceOrder)
-		// console.log('priceOrder', data.priceOrder, result)
 	}
 
-	// console.log('sortProducts', result)
 	return result
 }
 

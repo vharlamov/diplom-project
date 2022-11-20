@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getShopCart, removeShcart, updateShcart } from '../store/shopCart'
+import { getShopCart, updateShcart } from '../store/shopCart'
 import config from '../config.js'
 import _ from 'lodash'
 import { getProductsList } from '../store/products'
@@ -17,6 +17,7 @@ const ShoppingCart = () => {
 	const shopCart = useSelector(getShopCart())
 	const products = useSelector(getProductsList())
 	const [shcart, setShcart] = useState(shopCart)
+
 	const selectProds = shcart.map((item) => {
 		const product = products.find((p) => p._id === item._id)
 		return {
@@ -25,6 +26,7 @@ const ShoppingCart = () => {
 			price: product.price * item.quantity,
 		}
 	})
+
 	const [sum, setSum] = useState(
 		selectProds.reduce((acc, p) => acc + p.price, 0)
 	)
@@ -42,7 +44,6 @@ const ShoppingCart = () => {
 			path: 'image',
 			name: '',
 			component: (product) => {
-				console.log('component', product)
 				return (
 					<img
 						src={config + 'uploads/' + product.images[0]}
@@ -131,10 +132,12 @@ const ShoppingCart = () => {
 	}
 
 	const handleCreateOrder = () => {
-		history.push('/order')
+		history.push('/createorder')
 	}
 
 	const handleExit = () => {
+		setShcart([])
+
 		history.push('/product/goods')
 	}
 
@@ -156,7 +159,17 @@ const ShoppingCart = () => {
 					)}
 
 					{!shcart.length ? (
-						'Пока товары не выбраны'
+						<>
+							<h5>'Пока товары не выбраны'</h5>
+							<div className='row justify-content-end'>
+								<button
+									className='btn btn-secondary col-2'
+									onClick={handleExit}
+								>
+									Выйти
+								</button>
+							</div>
+						</>
 					) : (
 						<>
 							<table>
@@ -175,18 +188,17 @@ const ShoppingCart = () => {
 										</button>
 									) : null}
 									<button
-										className='btn btn-secondary ms-2'
-										onClick={handleExit}
-									>
-										Выйти
-									</button>
-
-									<button
 										className='btn btn-primary ms-2'
 										disabled={!currentUser}
 										onClick={handleCreateOrder}
 									>
 										Отправить заказ
+									</button>
+									<button
+										className='btn btn-secondary ms-2'
+										onClick={handleExit}
+									>
+										Выйти
 									</button>
 								</div>
 							</div>

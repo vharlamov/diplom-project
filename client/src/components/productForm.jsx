@@ -13,8 +13,8 @@ import {
 } from '../store/products'
 import { useHistory, useParams } from 'react-router-dom'
 import imageService from '../services/imageService'
-import config from '../config.js'
 import { getChapters } from '../store/chapters'
+import ImageCard from './imageCard'
 
 const initialData = {
 	_id: '',
@@ -39,18 +39,6 @@ const ProductForm = () => {
 	const [errors, setError] = useState({})
 	const [data, setData] = useState(initialData)
 	const [images, setImages] = useState([])
-	const URL = config + 'uploads/'
-
-	const [formConfig, setFormConfig] = useState({
-		chapter: [
-			{ name: 'Все', value: 'all' },
-			{ name: 'Керамика', value: 'ceramics' },
-			{ name: 'Эпоксидка', value: 'epoxide' },
-		],
-		category: 'all',
-		subcategories: [],
-	})
-
 	const currentProduct = useSelector(getProductById(params.edit))
 
 	useEffect(() => {
@@ -165,11 +153,11 @@ const ProductForm = () => {
 	}
 
 	return (
-		<>
-			<div className='d-flex flex-column mx-3'>
-				<form onSubmit={handleSubmit}>
-					<div className='d-flex flex-row'>
-						<div className='col-4'>
+		<div className='container col-lg-9 col-md-9 mx-0 px-4'>
+			<div className='row mx-0 px-0 w-100%'>
+				<form className='row w-100% px-0' onSubmit={handleSubmit}>
+					<div className='row cols-2 px-0'>
+						<div className='col-4 mx-0'>
 							<TextField
 								label='Название'
 								name='title'
@@ -178,7 +166,7 @@ const ProductForm = () => {
 								error={errors.title}
 							/>
 						</div>
-						<div className='col-8'>
+						<div className='col-8 mx-0 px-0'>
 							<TextAreaField
 								label='Описание'
 								name='description'
@@ -192,86 +180,97 @@ const ProductForm = () => {
 						style={{ size: '2px' }}
 						className='bg-danger border-2 border-danger'
 					/>
-					<div className='d-flex flex-row'>
-						<TextField
-							label='Цена'
-							type='number'
-							name='price'
-							value={data.price || ''}
-							onChange={handleChange}
-							error={errors.price}
-						/>
-						<TextField
-							label='Скидка'
-							type='number'
-							name='discount'
-							value={data.discount || ''}
-							onChange={handleChange}
-							error={errors.discount}
-						/>
-						<TextField
-							label='Продано'
-							name='sales'
-							type='number'
-							value={data.sales || ''}
-							onChange={handleChange}
-							error={errors.sales}
-						/>
-						<TextField
-							label='В наличии'
-							type='number'
-							name='quantity'
-							value={data.quantity || ''}
-							onChange={handleChange}
-							error={errors.quantity}
-						/>
-						<TextField
-							label='Рейтинг'
-							type='number'
-							name='rate'
-							value={data.rate || ''}
-							onChange={handleChange}
-							error={errors.rate}
-						/>
+					<div className='row cols-5'>
+						<div className='col'>
+							<TextField
+								label='Цена'
+								type='number'
+								name='price'
+								value={data.price || ''}
+								onChange={handleChange}
+								error={errors.price}
+							/>
+						</div>
+						<div className='col'>
+							<TextField
+								label='Скидка'
+								type='number'
+								name='discount'
+								value={data.discount || ''}
+								onChange={handleChange}
+								error={errors.discount}
+							/>
+						</div>
+						<div className='col'>
+							<TextField
+								label='Продано'
+								name='sales'
+								type='number'
+								value={data.sales || ''}
+								onChange={handleChange}
+								error={errors.sales}
+							/>
+						</div>
+						<div className='col'>
+							<TextField
+								label='В наличии'
+								type='number'
+								name='quantity'
+								value={data.quantity || ''}
+								onChange={handleChange}
+								error={errors.quantity}
+							/>
+						</div>
+						<div className='col'>
+							<TextField
+								label='Рейтинг'
+								type='number'
+								name='rate'
+								value={data.rate || ''}
+								onChange={handleChange}
+								error={errors.rate}
+							/>
+						</div>
 					</div>
 					<hr className='bg-danger border-2 border-danger' />
-					<div className='d-flex flex-row'>
-						<SelectField
-							defaultOption={{ name: 'Все', value: 'all' }}
-							label='Раздел'
-							name='chapter'
-							options={getChaptersOpts()}
-							value={data.chapter}
-							onChange={handleChange}
-							error={errors.chapter}
-						/>
-						<SelectField
-							defaultOption={{ name: 'Все', value: 'all' }}
-							label='Категория'
-							name='category'
-							options={getCategoryOpts()}
-							value={data.category}
-							onChange={handleChange}
-							error={errors.category}
-						/>
+					<div className='row cols-2'>
+						<div className='col'>
+							<SelectField
+								defaultOption={{ name: 'Все', value: 'all' }}
+								label='Раздел'
+								name='chapter'
+								options={getChaptersOpts()}
+								value={data.chapter}
+								onChange={handleChange}
+								error={errors.chapter}
+							/>
+						</div>
+						<div className='col'>
+							<SelectField
+								defaultOption={{ name: 'Все', value: 'all' }}
+								label='Категория'
+								name='category'
+								options={getCategoryOpts()}
+								value={data.category}
+								onChange={handleChange}
+								error={errors.category}
+							/>
+						</div>
 					</div>
 				</form>
 				<hr className='bg-danger border-2 border-danger' />
-				<div className='d-flex flex-row'>
-					{data.images.length
-						? data.images.map((file, i) => (
-								<div className='d-flex flex-column mt-3 ms-3' key={i}>
-									<img src={URL + file} style={{ height: 260 }} />
-									<button
-										className='btn btn-danger w-50%'
-										data-filename={file}
+				<div className='container d-flex px-0 w-100%'>
+					<div className='row w-100% cols-lg-3 cols-md-3 cols-sm-2 cols-xs-1'>
+						{data.images.length
+							? data.images.map((file, i) => (
+									<ImageCard
+										file={file}
 										onClick={handleDeleteProdImage}
-									>
-										Удалить
-									</button>
-								</div>
-						  ))
-						: null}
+										key={i}
+									/>
+							  ))
+							: null}
+					</div>
 				</div>
 
 				<ImgsLoadField
@@ -282,9 +281,9 @@ const ProductForm = () => {
 					error={errors.images}
 				/>
 				<hr className='bg-danger border-2 border-danger' />
-				<div className='d-grid gap-3 d-md-flex justify-content-end mb-5'>
+				<div className='row w-100% p-0 gap-3 justify-content-end mb-5'>
 					<button
-						className='btn btn-danger'
+						className='btn btn-danger col'
 						disabled={!data._id}
 						type='button'
 						onClick={handleDeleteProduct}
@@ -292,14 +291,14 @@ const ProductForm = () => {
 						Удалить товар
 					</button>
 					<button
-						className='btn btn-primary'
+						className='btn btn-primary col'
 						type='button'
 						onClick={handleCancel}
 					>
 						Отмена
 					</button>
 					<button
-						className='btn btn-success'
+						className='btn btn-success col'
 						type='button'
 						onClick={handleSubmit}
 					>
@@ -307,7 +306,7 @@ const ProductForm = () => {
 					</button>
 				</div>
 			</div>
-		</>
+		</div>
 	)
 }
 

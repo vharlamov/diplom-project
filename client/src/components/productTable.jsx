@@ -1,10 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import config from '../config.js'
 import Table from './common/table/table'
 
 const ProductTable = ({ products }) => {
-	useEffect(() => {}, [products])
+	const [sorted, setSorted] = useState(products)
+	useEffect(() => {
+		setSorted(products)
+	}, [products])
+
+	const onSort = (sortData, dir) => {
+		const sortedList = sortProductsByOne(products, sortData, dir)
+
+		setSorted(sortedList)
+	}
+
 	const columns = {
 		image: {
 			path: 'image',
@@ -47,7 +57,7 @@ const ProductTable = ({ products }) => {
 		},
 	}
 
-	return <Table data={products} columns={columns} />
+	return <Table data={sorted} columns={columns} onSort={onSort} />
 }
 
 export default ProductTable

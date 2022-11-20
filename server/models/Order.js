@@ -19,6 +19,9 @@ const schema = new Schema(
 		comment: {
 			type: String,
 		},
+		costAmount: {
+			type: Number,
+		},
 	},
 	{
 		timestamps: true,

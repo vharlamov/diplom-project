@@ -12,17 +12,20 @@ function UserMenu({ userName, handleLogOut, isAdmin }) {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		dispatch(loadOrdersList())
+		if (!user.isAdmin) {
+			dispatch(loadOrdersList())
+		}
 	}, [])
 
 	const toggleHandler = () => {
 		setShow((prev) => !prev)
-		console.log('dropMenu', show)
 	}
 
 	const handleOrders = () => {
 		toggleHandler()
-		dispatch(loadOrdersList(user.orders))
+		if (!user.isAdmin) {
+			dispatch(loadOrdersList(user.orders))
+		}
 		history.push('/order')
 	}
 

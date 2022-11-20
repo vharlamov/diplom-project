@@ -64,7 +64,6 @@ router.post('/signInWithPassword', [
 	check('email', 'Некорректный email').normalizeEmail().isEmail(),
 	check('password', 'Пароль не может быть пустым').exists(),
 	async (req, res) => {
-		// console.log('login request', req.body)
 		try {
 			const errors = validationResult(req)
 
@@ -81,7 +80,6 @@ router.post('/signInWithPassword', [
 			const { email, password } = req.body
 			const existUser = await User.findOne({ email })
 
-			// console.log('auth login data', existUser)
 			if (!existUser) {
 				return res.status(400).json({
 					error: {
@@ -157,7 +155,6 @@ router.post('/proof', async (req, res) => {
 			const adminProof = await tokenService.validateAdmin(req.body.token)
 			isAdmin = adminProof.isAdmin
 			res.status(200).send(adminProof)
-			// console.log(adminProof)
 		}
 	} catch (e) {
 		res.status(500).json({
@@ -168,7 +165,6 @@ router.post('/proof', async (req, res) => {
 
 router.post('/logout', (req, res) => {
 	isAdmin = false
-	// console.log('logout', isAdmin)
 	res.status(200).json({ isAdmin })
 })
 

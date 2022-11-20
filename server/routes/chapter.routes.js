@@ -16,7 +16,6 @@ router
 		}
 	})
 	.post(auth, async (req, res) => {
-		// console.log('POST works', req.body)
 		try {
 			const chapter = await Chapter.create(req.body)
 			res.status(200).send(chapter)

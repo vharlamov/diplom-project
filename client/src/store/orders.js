@@ -1,6 +1,6 @@
 import { createAction, createSlice } from '@reduxjs/toolkit'
 import orderService from '../services/order.service'
-import usersReducer, { usersSlice } from './users'
+import { usersSlice } from './users'
 
 const orderSlice = createSlice({
 	name: 'orders',
@@ -17,7 +17,6 @@ const orderSlice = createSlice({
 			state.isLoading = true
 		},
 		orderRecieved: (state, action) => {
-			console.log('orders recieved', action.payload)
 			state.entities = action.payload
 			state.dataLoaded = true
 			state.isLoading = false
@@ -31,7 +30,7 @@ const orderSlice = createSlice({
 			state.currentOrder = action.payload
 		},
 		orderRemoved: (state, action) => {
-			state.entities.filter((e) => e._id === action.payload)
+			state.entities = state.entities.filter((e) => e._id !== action.payload)
 		},
 		orderPatched: (state, action) => {
 			const index = state.entities.findIndex(
@@ -54,12 +53,8 @@ const {
 const orderCreateReq = createAction('orders/orderCreateReq')
 const orderCreateFailed = createAction('orders/orderCreateFailed')
 const orderRemoveReq = createAction('orders/orderRemoveReq')
-const orderRemoveFailed = createAction('orders/orderRemoveFailed')
 const orderPatchReq = createAction('orders/orderPatchReq')
 const orderPatchFailed = createAction('orders/orderPatchFailed')
-
-const { actions: userActions } = usersSlice
-const { userUpdateRequested, userUpdateSuccessed } = userActions
 
 export const loadOrdersList = () => async (dispatch) => {
 	dispatch(orderRequested())
@@ -74,19 +69,10 @@ export const loadOrdersList = () => async (dispatch) => {
 
 export const createOrder = (payload) => async (dispatch) => {
 	dispatch(orderCreateReq())
-	// console.log('orders payload', payload)
 	try {
 		const { content } = await orderService.createOrder(payload)
-		// console.log('orders users state', state.orders)
 		dispatch(orderCreated(content))
-		// 		const currentUser = state.users.currentUser
-		// 		const userOrders = currentUser.orders ? currentUser.orders : []
-		//
-		// 		dispatch(
-		// 			updateUser(payload.userId, {
-		// 				orders: userOrders.unshift(content._id),
-		// 			})
-		// 		)
+		return content._id
 	} catch (e) {
 		dispatch(orderCreateFailed(e.message))
 	}
@@ -103,21 +89,18 @@ export const removeOrder = (id) => async (dispatch) => {
 	}
 }
 
-export const updateOrder = (id, payload) => async (state, dispatch) => {
+export const updateOrder = (id, payload) => async (dispatch) => {
 	dispatch(orderPatchReq())
-	// console.log('orders state.users', state.users)
 
 	try {
 		const { content } = await orderService.updateOrder(id, payload)
 		dispatch(orderPatched(content))
-		// console.log('orders content', content)
 	} catch (e) {
 		dispatch(orderPatchFailed(e.message))
 	}
 }
 
 export const getOrdersList = () => (state) => {
-	// console.log('getOrdersList', state.orders)
 	return state.orders.entities
 }
 
@@ -125,6 +108,12 @@ export const getCurrentOrder = () => (state) => state.orders.currentOrder
 
 export const getOrdersLoadingStatus = () => (state) => {
 	return state.orders.isLoading
+}
+
+export const getOrderById = (id) => (state) => {
+	const order = state.orders.entities.find((o) => o._id === id)
+
+	return order
 }
 
 export default ordersReducer

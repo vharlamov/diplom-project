@@ -4,8 +4,6 @@ const User = require('../models/User')
 const router = express.Router()
 
 router.get('/', auth, async (req, res) => {
-	// console.log('server user get')
-
 	try {
 		const list = await User.find()
 		res.status(200).send(list)

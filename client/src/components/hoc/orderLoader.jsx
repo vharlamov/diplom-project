@@ -10,11 +10,11 @@ import {
 import { getShopCart, loadShcart } from '../../store/shopCart'
 import { loadUsersList, proofAdmin } from '../../store/users'
 
-const AppLoader = ({ children }) => {
+const OrderLoader = ({ children }) => {
 	const dispatch = useDispatch()
-	const chaptersLoading = useSelector(getChaptersLoading())
-	const categoriesLoading = useSelector(getCatLoadingStatus())
+	const usersLoading = useSelector(getChaptersLoading())
 	const productsLoading = useSelector(getProductsLoadingStatus())
+	const ordersLoading = useSelector(getOrdersLoadingStatus())
 
 	let userLoaded = false
 
@@ -24,16 +24,14 @@ const AppLoader = ({ children }) => {
 	}, [])
 
 	useEffect(() => {
-		dispatch(loadCategoriesList())
 		dispatch(loadProductsList())
 		dispatch(loadShcart())
-		dispatch(loadChaptersList())
-		dispatch(loadOrdersList())
 		dispatch(loadUsersList())
+		dispatch(loadOrdersList())
 	}, [userLoaded])
 
-	if (categoriesLoading || chaptersLoading || productsLoading) return 'Loading'
+	if (usersLoading || productsLoading || ordersLoading) return 'Loading...'
 	return children
 }
 
-export default AppLoader
+export default OrderLoader

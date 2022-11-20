@@ -35,15 +35,10 @@ const productsSlice = createSlice({
 		},
 
 		productUpdated: (state, action) => {
-			state.entities[
-				state.entities.findIndex((e) => e._id === action.payload._id)
-			] = action.payload
-			console.log(
-				'productUpdated',
-				state.entities[
-					state.entities.findIndex((e) => e._id === action.payload._id)
-				]
+			const index = state.entities.findIndex(
+				(e) => e._id === action.payload._id
 			)
+			state.entities[index] = action.payload
 		},
 	},
 })
@@ -59,7 +54,6 @@ const {
 } = actions
 
 const addProductRequested = createAction('products/addProductRequested')
-const addProductReqFailed = createAction('products/addProductReqFailed')
 const removeProductRequested = createAction('products/removeProductRequested')
 const removeProductReqFailed = createAction('products/removeProductReqFailed')
 const updateProductRequested = createAction('products/updateProductRequested')

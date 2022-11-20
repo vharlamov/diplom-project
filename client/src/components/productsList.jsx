@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
+import { getProductsList } from '../store/products'
 import ProductTable from './productTable'
 
-const ProductsList = ({ product }) => {
+const ProductsList = () => {
+	const data = useSelector(getProductsList())
 	const history = useHistory()
-	const [products, setProducts] = useState(product)
+	const [products, setProducts] = useState(data)
 	const [search, setSearch] = useState('')
 	const [filtered, setFiltered] = useState([])
 	const params = useParams()
 
 	useEffect(() => {
-		setProducts(product)
+		setProducts(data)
 		filterBySearch()
-	})
+	}, [data])
 
 	useEffect(() => {
 		filterBySearch()
@@ -36,7 +39,7 @@ const ProductsList = ({ product }) => {
 	}
 
 	return (
-		<div className='container max-width-sm w-75 h-100'>
+		<div className='container pe-0 ps-lg-2 ps-md-2 ps-sm-0 ps-xs-0 me-0 ms-0 col-lg-9 col-md-9 col-sm-12 col-xs-12'>
 			<div className='row ms-0 me-2 mb-3'>
 				<input
 					type='text'

@@ -4,8 +4,6 @@ import configFile from '../config.js'
 import authService from './auth.service'
 import localStorageService from './localStorage.service'
 
-console.log('configFile', configFile)
-
 const http = axios.create({
 	baseURL: configFile,
 })
@@ -24,7 +22,6 @@ http.interceptors.request.use(
 		const accessToken = localStorageService.getAccessToken()
 
 		if (accessToken) {
-			// config.data = payload
 			config.headers = {
 				...config.headers,
 				authorization: `Bearer ${accessToken}`,

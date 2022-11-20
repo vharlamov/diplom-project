@@ -44,7 +44,6 @@ export const usersSlice = createSlice({
 			state.isLoading = false
 		},
 		authRequestSuccess: (state, action) => {
-			console.log('auth', action.payload)
 			state.currentUser = action.payload
 			state.auth = { userId: action.payload.userId }
 			state.isLogged = true
@@ -75,7 +74,9 @@ export const usersSlice = createSlice({
 					state.entities.findIndex((u) => u._id === action.payload._id)
 				] = action.payload
 			}
-			state.currentUser = action.payload
+			if (state.currentUser._id === action.payload._id) {
+				state.currentUser = action.payload
+			}
 		},
 		authRequested: (state) => {
 			state.error = null
@@ -146,9 +147,7 @@ export const signUp =
 export const proofAdmin = (redirect) => async (dispatch) => {
 	dispatch(authRequested())
 	try {
-		// const token = localStorageService.getAccessToken()
 		const data = await authService.proof()
-		console.log('proofAdmin data', data)
 		dispatch(authAdmin(data))
 		history.push(redirect)
 	} catch (error) {
@@ -173,13 +172,10 @@ export const loadUsersList = () => async (dispatch) => {
 	}
 }
 
-export const updateUser = (payload) => async (dispatch) => {
+export const updateUser = (id, payload) => async (dispatch) => {
 	dispatch(userUpdateRequested())
-	// console.log('currentUser payload', payload)
-	delete payload._id
 	try {
-		const { content } = await userService.updateUser(payload)
-		console.log('update user content', content)
+		const { content } = await userService.updateUser(id, payload)
 		dispatch(userUpdateSuccessed(content))
 	} catch (error) {
 		dispatch(userUpdateFailed(error.message))
@@ -200,7 +196,6 @@ export const getUserById = (userId) => (state) => {
 }
 
 export const getIsLogged = () => (state) => {
-	// console.log(state.users.isLogged)
 	return state.users.isLogged
 }
 export const getDataStatus = () => (state) => state.users.dataLoaded

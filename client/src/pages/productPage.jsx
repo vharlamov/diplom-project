@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProductById } from '../store/products'
 import config from '../config.js'
 import { useHistory } from 'react-router-dom'
-import { getShopCart, loadShcart, updateShcart } from '../store/shopCart'
+import { getShopCart, updateShcart } from '../store/shopCart'
 
 const ProductPage = ({ id }) => {
 	const dispatch = useDispatch()
@@ -37,10 +37,14 @@ const ProductPage = ({ id }) => {
 	}, [shcart])
 
 	return (
-		<div className='w-100'>
+		<div className='container col-12'>
 			<div className='row'>
 				{product.images.map((img, i) => (
-					<img src={URL + img} key={i} className='img col-4' />
+					<img
+						src={URL + img}
+						key={i}
+						className='img col-lg-4 col-md-5 col-sm-6'
+					/>
 				))}
 			</div>
 			<hr />

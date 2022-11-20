@@ -30,17 +30,25 @@ const Login = () => {
 							</p>
 						</>
 					) : (
-						<>
+						<div className='container'>
 							<h3 className='mb-4'>Login</h3>
 							<LoginForm />
-							<p>
-								Dont have account?{' '}
-								<a role='button' onClick={toggleFormType}>
-									{' '}
-									Sign Up
-								</a>
-							</p>
-						</>
+							<div className='row justify-content-end'>
+								<div className='col mt-3'>
+									<p>
+										Нет аккаунта?{' '}
+										<a
+											role='button'
+											className='text-bold color-danger'
+											onClick={toggleFormType}
+										>
+											{' '}
+											Зарегистрируйтесь!
+										</a>
+									</p>
+								</div>
+							</div>
+						</div>
 					)}
 				</div>
 			</div>

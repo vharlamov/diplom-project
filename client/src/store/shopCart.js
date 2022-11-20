@@ -7,20 +7,20 @@ const shcartSlice = createSlice({
 		entities: [],
 	},
 	reducers: {
-		// shcartCreated: (state, action) => {
-		// 	state.entities = action.payload
-		// },
 		shcartUpdated: (state, action) => {
 			state.entities = action.payload
 		},
 		shcartRemoved: (state, action) => {
 			state.entities = state.entities.filter((p) => p !== action.payload)
 		},
+		shCartCleared: (state) => {
+			state.entities = []
+		},
 	},
 })
 
 const { actions, reducer: shcartReducer } = shcartSlice
-const { shcartCreated, shcartRemoved, shcartUpdated } = actions
+const { shcartCreated, shcartRemoved, shcartUpdated, shCartCleared } = actions
 
 export const loadShcart = () => (dispatch) => {
 	const shCart = JSON.parse(localStorageService.getShopCart())
@@ -35,11 +35,15 @@ export const updateShcart = (payload) => (dispatch) => {
 
 export const removeShcart = (payload) => (state, dispatch) => {
 	dispatch(shcartRemoved(payload))
-	// localStorageService.setShopCart(state.shCart.entities)
+	localStorageService.setShopCart(state.shCart.entities)
+}
+
+export const clearShcart = () => (dispatch) => {
+	dispatch(shCartCleared())
+	localStorageService.removeShopCart()
 }
 
 export const getShopCart = () => (state) => {
-	// console.log('state.shopcart', state.shCart)
 	return state.shCart.entities
 }
 

@@ -44,7 +44,6 @@ router.patch('/:id', auth, async (req, res) => {
 		const { id } = req.params
 		await Category.updateOne({ _id: id }, { name: req.body.name })
 		const category = await Category.findById(id)
-		// console.log('Server patched category', category)
 		res.status(200).send(category)
 	} catch (e) {
 		res.status(500).json({

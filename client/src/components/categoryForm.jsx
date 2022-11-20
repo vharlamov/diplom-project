@@ -54,14 +54,6 @@ const CategoryForm = () => {
 		chapterChange: chapters.find((c) => c._id === data.chapterChange.id),
 	}
 
-	// useEffect(() => {
-	// 	console.log('Chapters', chapters)
-	// }, [data])
-
-	// useEffect(() => {
-	// 	console.log('Errors', errors)
-	// }, [errors])
-
 	useEffect(() => {
 		if (data.categoryChange.id) {
 			setData((prev) => {

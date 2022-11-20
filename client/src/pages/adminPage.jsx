@@ -8,6 +8,8 @@ import { getProductsList } from '../store/products'
 import { getIsAdmin, getUsersList, loadUsersList } from '../store/users'
 import sortProducts from '../utils/sortProducts'
 import { getOrdersList, loadOrdersList } from '../store/orders'
+import OrdersList from '../components/ordersList'
+import OrderControl from '../components/orderControl'
 
 const AdminPage = () => {
 	const dispatch = useDispatch()
@@ -16,11 +18,8 @@ const AdminPage = () => {
 	const params = useParams()
 	const [product, setProduct] = useState(prodList)
 	const [sorted, setSorted] = useState(product)
-	const users = useSelector(getUsersList())
-	const orders = useSelector(getOrdersList())
 
 	useEffect(() => {
-		dispatch(loadOrdersList())
 		dispatch(loadUsersList())
 	}, [])
 
@@ -29,7 +28,7 @@ const AdminPage = () => {
 	}, [prodList])
 
 	function getPricesMinMax() {
-		const prices = product.map((p) => p.price).sort((a, b) => a - b)
+		const prices = product.map((p) => p?.price).sort((a, b) => a - b)
 		return { min: prices[0], max: prices[prices.length - 1] }
 	}
 
@@ -41,18 +40,22 @@ const AdminPage = () => {
 
 	return (
 		<>
-			<div className='container-fluid w-100 gap-4 h-100vh d-flex flex-row'>
-				<SidePanel
-					isAdmin={isAdmin}
-					onSort={onSort}
-					products={product}
-					price={getPricesMinMax()}
-				/>
-				{params.add || params.id ? (
-					<ProductForm />
-				) : (
-					<ProductsList product={sorted} />
-				)}
+			<div className='container mx-0 px-0 w-100%' style={{ maxWidth: '955px' }}>
+				<div className='row row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-xs-1 w-100% mx-0 justify-content-center gx-2'>
+					{params.order && <OrdersList />}
+					{params.order && params.id && <OrderControl id={params.id} />}
+					<SidePanel
+						isAdmin={isAdmin}
+						onSort={onSort}
+						products={product}
+						price={getPricesMinMax()}
+					/>
+					{params.add || params.id ? (
+						<ProductForm />
+					) : (
+						<ProductsList product={sorted} />
+					)}
+				</div>
 			</div>
 		</>
 	)

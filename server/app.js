@@ -10,8 +10,6 @@ require('dotenv').config()
 const helpers = require('./helpers')
 const bodyParser = require('body-parser')
 const fs = require('fs/promises')
-// const readdir = require('fs/promises')
-// const session = require('express-session')
 const auth = require('./middleware/auth.middleware')
 
 const app = express()
@@ -23,8 +21,6 @@ app.use(cors())
 app.use('/api', routes)
 
 const PORT = process.env.PORT ?? 8080
-
-// console.log(process.env.NODE_ENV)
 
 if (process.env.NODE_ENV === 'production') {
 	app.use('/', express.static(path.join(__dirname, 'client')))
@@ -61,7 +57,6 @@ app.post('/upload-profile-pic', auth, (req, res, next) => {
 	}).single('profile_pic')
 
 	upload(req, res, function (err) {
-		// console.log('req.file', req.file)
 		if (req.fileValidationError) {
 			return res.send(req.fileValidationError)
 		} else if (!req.file) {

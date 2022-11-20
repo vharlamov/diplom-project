@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { sortProductByOne } from '../../../utils/sortProductsByOne'
 
 const TableHeader = ({ columns }) => {
+	const [dir, setDir] = useState('asc')
+
+	const handleSort = (path) => {
+		sortProductByOne()
+	}
+
 	return (
 		<thead>
 			<tr>

@@ -4,15 +4,9 @@ import { useParams } from 'react-router-dom'
 import ProductCard from './productCard'
 
 const UserProductWall = ({ products, handleShCart }) => {
-	// console.log('UserProductWall', products)
 	const params = useParams()
-	// const sortedProds = products.filter((p) => p.chapter === chapter)
 	const [data, setData] = useState([])
 	const [search, setSearch] = useState('')
-
-	// useEffect(() => {
-	// 	setData(sortedProds)
-	// }, [products])
 
 	const handleSearch = ({ target }) => {
 		setSearch(target.value)
@@ -28,8 +22,8 @@ const UserProductWall = ({ products, handleShCart }) => {
 	}
 
 	return (
-		<div className='container pe-0 ps-lg-2 ps-md-2 ps-sm-0 ps-xs-0 me-0 ms-0 col-lg-9 col-md-9 col-sm-12 col-xs-12'>
-			<div className='d-flex flex-row justify-content-end'>
+		<div className='container px-0 me-0 ms-0 col-lg-9 col-md-9 col-sm-12 col-xs-12'>
+			<div className='d-flex flex-row mx-3 justify-content-end'>
 				<input
 					type='text'
 					onChange={handleSearch}
@@ -37,7 +31,7 @@ const UserProductWall = ({ products, handleShCart }) => {
 					placeholder='Искать по названию'
 				/>
 			</div>
-			<div className='row row-cols-xs-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 justify-content-center mx-0 w-100%'>
+			<div className='row row-cols-1 row-cols-xs-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-3 justify-content-center mx-0 w-100%'>
 				{filterBySearch().map((p, i) => (
 					<ProductCard data={p} key={i} handleShCart={handleShCart} />
 				))}

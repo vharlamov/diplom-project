@@ -21,7 +21,12 @@ const schema = new Schema(
 			required: true,
 		},
 		phone: { type: String },
-		orders: [String],
+		orders: [
+			{
+				type: String,
+				unique: true,
+			},
+		],
 	},
 	{
 		timestamps: true,

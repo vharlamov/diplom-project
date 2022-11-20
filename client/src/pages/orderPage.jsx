@@ -1,4 +1,4 @@
-import { getShopCart } from '../store/shopCart'
+import { clearShcart, getShopCart } from '../store/shopCart'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCurrentUser, updateUser } from '../store/users'
 import TableBody from '../components/common/table/tableBody'
@@ -6,55 +6,62 @@ import { getProductsList } from '../store/products'
 import { useEffect, useState } from 'react'
 import config from '../config.js'
 import TextAreaField from '../components/common/form/textAreaField'
-import {
-	createOrder,
-	getCurrentOrder,
-	getOrdersList,
-	loadOrdersList,
-} from '../store/orders'
+import { createOrder, getOrderById, getOrdersList } from '../store/orders'
 import history from '../utils/history'
+import { useParams } from 'react-router-dom'
+import dateFormat from '../utils/dateFormat'
 
-const orderPage = () => {
+const OrderPage = () => {
 	const dispatch = useDispatch()
 	const currentUser = useSelector(getCurrentUser())
 	const shopCart = useSelector(getShopCart())
 	const products = useSelector(getProductsList())
 	const currentOrders = useSelector(getOrdersList())
-	const currentOrder = useSelector(getCurrentOrder())
-	const [shcart, setShcart] = useState(shopCart)
+	const id = useParams().id
+	const currentOrder = useSelector(getOrderById(id))
+	const [shСart, setShcart] = useState(shopCart)
+	const [user, setUser] = useState(currentUser)
+	const status = ['Принят', 'В обработке', 'Закрыт']
+	const color = ['danger', 'success', 'secondary']
 
-	console.log('current user', currentUser)
 	const initOrder = {
-		userId: currentUser._id,
-		status: 0,
-		products: shopCart,
-		comment: '',
+		userId: currentUser?._id,
+		status: currentOrder?.status || 0,
+		products: id ? currentOrder?.products : shСart,
+		comment: currentOrder?.comment,
+		costAmount: currentOrder?.costAmount || 0,
 	}
 	const [order, setOrder] = useState(initOrder)
-	const selectProds = shcart.map((item) => {
+	const selectProds = order.products?.map((item) => {
 		const product = products.find((p) => p._id === item._id)
 		return {
 			...product,
 			quantity: item.quantity,
-			price: product.price * item.quantity,
+			price: product.price,
 		}
 	})
-	const [sum, setSum] = useState(
-		selectProds.reduce((acc, p) => acc + p.price, 0)
-	)
 
 	useEffect(() => {
-		// console.log('current Orders', currentOrders)
-		// const currentOrder = currentOrders[currentOrders.length - 1]
-		// console.log('currentOrder', currentOrder._id)
+		setOrder(initOrder)
+		getOrderSum()
+	}, [])
 
+	function getOrderSum() {
+		const sum = selectProds?.reduce((acc, item) => {
+			acc += item.price * item.quantity
+			return acc
+		}, 0)
+		setOrder((prev) => ({ ...prev, costAmount: sum }))
+		return sum
+	}
+
+	useEffect(() => {
 		if (currentOrder) {
-			const orders = currentUser.orders || []
+			const orders = currentUser?.orders || []
 			let updOrders = [...orders]
 			updOrders.unshift(currentOrder._id)
-			console.log('orders', [...currentUser.orders])
-			const updatedUser = { ...currentUser, orders: updOrders }
-			dispatch(updateUser(updatedUser))
+			const updatedUser = { ...user, orders: updOrders }
+			dispatch(updateUser(currentUser._id, updatedUser))
 		}
 	}, [currentOrders])
 
@@ -78,15 +85,16 @@ const orderPage = () => {
 			component: (product) => product.title,
 			class: 'col-3 ms-2 ps-2',
 		},
-		price: {
-			path: 'price',
-			name: 'Цена',
-			class: 'col-1 ms-0 text-center',
-		},
 		quantity: {
 			path: 'quantity',
 			name: 'Кол-во',
 			class: 'col-2 ms-2 ps-2 text-center',
+		},
+		price: {
+			path: 'price',
+			name: 'Цена',
+			component: (product) => `${product.price} руб`,
+			class: 'col-1 ms-0 text-center',
 		},
 	}
 
@@ -94,45 +102,72 @@ const orderPage = () => {
 		setOrder((prev) => ({ ...prev, comment: value }))
 	}
 
-	const handleSubmit = (e) => {
-		e.preventDefault()
-		// console.log('send order payload', order)
-		dispatch(createOrder(order))
+	const handleExit = () => {
+		id ? history.push('/order') : history.push('/product/goods')
 	}
 
-	const handleExit = () => {
-		history.push('/product/goods')
+	const handleSubmit = async (e) => {
+		e.preventDefault()
+		const orderId = await dispatch(createOrder(order))
+		const userOrders = currentOrders.filter((o) => o.userId === user._id)
+		userOrders.push(orderId)
+		setUser((prev) => ({ ...prev, orders: userOrders }))
+		dispatch(updateUser(user._id, { orders: userOrders }))
+		dispatch(clearShcart())
+
+		handleExit()
 	}
 
 	return (
 		<div className='container mt-5' style={{ maxWidth: '800px' }}>
-			<div className='row w-100%'>
-				<div className='shadow p-4'>
-					<h1>Ваш заказ:</h1>
-					<h5>Пользователь: </h5>
-					{currentUser ? (
-						<div>
-							<p className='mb-0 width-4'>Имя: {currentUser.name}</p>
-							<p>Email: {currentUser.email}</p>
-						</div>
-					) : (
-						<p className='text-danger'>
-							Для отправки заказа Вам необходимо авторизоваться
-						</p>
-					)}
+			{currentOrder || shopCart ? (
+				<div className='row w-100%'>
+					<div className='shadow p-4'>
+						<h1>Ваш заказ:</h1>
+						{id && (
+							<h4>
+								<span>Статус: </span>
+								<span className={`text-${color[[currentOrder?.status]]}`}>
+									{status[[currentOrder.status]]}
+								</span>
+							</h4>
+						)}
+						{currentUser ? (
+							<>
+								<div>
+									<h5 className='mb-0 width-4'>Имя: {currentUser?.name}</h5>
+									<h5>Email: {currentUser?.email}</h5>
+								</div>
+								{id && (
+									<div className='row cols-2 my-4'>
+										<h6 className='col'>
+											<span>Создан: </span>
+											{dateFormat(currentOrder.createdAt)}
+										</h6>
+										<h6 className='col'>
+											<span>Изменён: </span>
+											{dateFormat(currentOrder.updatedAt)}
+										</h6>
+									</div>
+								)}
+							</>
+						) : (
+							<p className='text-danger'>
+								Для отправки заказа Вам необходимо авторизоваться
+							</p>
+						)}
 
-					{!shcart.length ? (
-						'Пока товары не выбраны'
-					) : (
 						<>
 							<table>
-								<TableBody {...{ columns, data: selectProds }} />
+								<TableBody {...{ columns, data: selectProds || [] }} />
 							</table>
 							<TextAreaField
 								placeholder='Ваши комментарии: добавочные контакты, вопросы, пожелания и др.'
 								onChange={handleComment}
 							/>
-							<h5 className='mt-4 text-end'>Общая сумма {sum} руб.</h5>
+							<h5 className='mt-4 text-end'>
+								Общая сумма {order.costAmount} руб.
+							</h5>
 							<div className='d-flex  justify-content-end'>
 								<div className='d-flex'>
 									<button
@@ -147,16 +182,18 @@ const orderPage = () => {
 										disabled={!currentUser}
 										onClick={handleSubmit}
 									>
-										Отправить заказ
+										{id ? 'Повторить заказ' : 'Отправить заказ'}
 									</button>
 								</div>
 							</div>
 						</>
-					)}
+					</div>
 				</div>
-			</div>
+			) : (
+				<h2>Loading...</h2>
+			)}
 		</div>
 	)
 }
 
-export default orderPage
+export default OrderPage

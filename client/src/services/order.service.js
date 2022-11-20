@@ -4,7 +4,6 @@ const orderEndpoint = 'api/order/'
 
 const orderService = {
 	getOrder: async () => {
-		// console.log('order service', payload)
 		const { data } = await httpService.get(orderEndpoint)
 		return data
 	},

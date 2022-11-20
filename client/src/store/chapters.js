@@ -65,34 +65,28 @@ export const loadChaptersList = () => async (dispatch) => {
 		const { content } = await chapterService.getChapter()
 		dispatch(chapterRecieved(content))
 	} catch (e) {
-		console.log('chapter request error', e.message)
 		dispatch(chapterReqFailed(e.message))
 	}
 }
 
 export const createChapter = (payload) => async (dispatch) => {
 	dispatch(chapterCreateRequested())
-	// console.log('createChapter', payload)
 
 	try {
 		const { content } = await chapterService.createChapter(payload)
 		dispatch(chapterCreated(content))
 	} catch (e) {
-		console.log('chapter create error', e.message)
 		dispatch(chapterCreateFailed(e.message))
 	}
 }
 
 export const updateChapter = (id, payload) => async (dispatch) => {
 	dispatch(chapterUpdateRequested())
-	console.log('store updateChapter run')
 
 	try {
 		const { content } = await chapterService.updateChapter(id, payload)
-		console.log('store updateChapter content', content)
 		dispatch(chapterUpdated(content))
 	} catch (e) {
-		console.log('chapter update error', e.message)
 		dispatch(chapterUpdateFailed(e.message))
 	}
 }
@@ -104,7 +98,6 @@ export const removeChapter = (id) => async (dispatch) => {
 		const { content } = await chapterService.removeChapter(id)
 		dispatch(chapterRemoved(id))
 	} catch (e) {
-		console.log('chapter remove error', e.message)
 		dispatch(chapterRemoveFailed(e.message))
 	}
 }

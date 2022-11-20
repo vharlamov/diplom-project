@@ -62,7 +62,6 @@ export const loadCategoriesList = () => async (dispatch) => {
 		const { content } = await categoryService.getCat()
 		dispatch(categoriesRecieved(content))
 	} catch (e) {
-		console.log('category request error', e.message)
 		dispatch(categoriesReqFailed(e.message))
 	}
 }
@@ -70,7 +69,6 @@ export const loadCategoriesList = () => async (dispatch) => {
 export const createCategory = (payload) => async (dispatch) => {
 	dispatch(addCategoryRequested())
 
-	console.log('add category')
 	try {
 		const { content } = await categoryService.createCat(payload)
 		dispatch(categoryCreated(content))
@@ -85,7 +83,6 @@ export const updateCategory = (id, payload) => async (dispatch) => {
 	try {
 		const { content } = await categoryService.updateCat(id, payload)
 		dispatch(categoryUpdated(content))
-		console.log('update category')
 	} catch (e) {
 		dispatch(categoryUpdReqFailed(e.message))
 	}

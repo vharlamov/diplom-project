@@ -1,12 +1,9 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import CategoryForm from '../components/categoryForm'
-import RegisterForm from '../components/registerForm'
 import { getCategories } from '../store/categories'
 
 const ChangeCategory = () => {
 	const categories = useSelector(getCategories())
-	const dispath = useDispatch()
 
 	return (
 		<div className='container mt-5'>

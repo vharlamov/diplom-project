@@ -9,11 +9,9 @@ import AdminPage from '../../client/src/pages/adminPage'
 import ChangeCategory from '../../client/src/pages/changeCategory'
 import Login from '../../client/src/pages/login'
 import MainPage from '../../client/src/pages/mainPage'
-import orderPage from '../../client/src/pages/orderPage'
-import ProductPage from '../../client/src/pages/productPage'
+import OrderPage from '../../client/src/pages/orderPage'
 import ShoppingCart from '../../client/src/pages/shcartPage'
 import UserPage from '../../client/src/pages/userPage'
-import authService from '../../client/src/services/auth.service'
 import { getProductsList } from '../../client/src/store/products'
 import {
 	getCurrentUser,
@@ -21,6 +19,7 @@ import {
 	getIsLogged,
 } from '../../client/src/store/users'
 import OrdersList from './components/ordersList'
+import EducationPage from './pages/educationPage'
 
 function App() {
 	const isAdmin = useSelector(getIsAdmin())
@@ -30,8 +29,8 @@ function App() {
 
 	return (
 		<div
-			className='container d-flex flex-column mx-auto h-100vh w-100vw'
-			style={{ maxWidth: '1000px', margin: '0 auto' }}
+			className='container d-flex flex-column mx-auto h-100vh w-100vw px-0'
+			style={{ maxWidth: '960px', margin: '0 auto' }}
 		>
 			<AppLoader>
 				<Navbar
@@ -46,9 +45,13 @@ function App() {
 						path='/admin/:add?/:edit?/:id?'
 						component={isAdmin ? AdminPage : MainPage}
 					/>
+					<ProtectedRoute
+						path='/admin/:order?/:id?'
+						component={isAdmin ? AdminPage : MainPage}
+					/>
 					<Route
 						path='/product/:goods?/:id?'
-						render={(props) => <UserPage prodList={prodList} />}
+						render={() => <UserPage prodList={prodList} />}
 					/>
 					<ProtectedRoute
 						path='/changecategory'
@@ -56,7 +59,9 @@ function App() {
 					/>
 					<Route path='/logout' component={LogOut} />
 					<Route path='/shcart' component={ShoppingCart} />
-					<Route path='/order' component={OrdersList} />
+					<Route path='/order/:id?' component={OrdersList} />
+					<Route path='/createorder' component={OrderPage} />
+					<Route path='/education' component={EducationPage} />
 				</Switch>
 			</AppLoader>
 		</div>

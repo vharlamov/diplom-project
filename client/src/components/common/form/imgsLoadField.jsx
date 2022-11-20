@@ -31,17 +31,17 @@ const ImgsLoadField = ({ label, value, onChange, error }) => {
 	}
 
 	return (
-		<>
+		<div className='row mb-4'>
 			<form
 				onSubmit={handleSubmit}
 				onChange={onChange}
 				encType='multipart/form-data'
 			>
-				<div className='d-flex flex-column'>
+				<div className='col'>
 					<label htmlFor='profile_pic' className='mb-3'>
 						{label}
 					</label>
-					<div className='d-grid gap-3 d-md-flex justify-content-end'>
+					<div className='row gap-3 justify-content-end'>
 						<input
 							type='file'
 							className='form-control'
@@ -74,7 +74,7 @@ const ImgsLoadField = ({ label, value, onChange, error }) => {
 						</div>
 					))}
 			</div>
-		</>
+		</div>
 	)
 }
 
