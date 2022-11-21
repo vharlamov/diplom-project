@@ -25,12 +25,10 @@ const ProductCard = ({ data, handleShCart }) => {
 					<h5 className='card-title'>{data.title}</h5>
 					<div className='row justify-content-between'>
 						<p className='col'>{`${data.price} руб`}</p>
-						{data.discount ? (
+						{data.discount && (
 							<p className='col text-danger'>
 								<strong>{`–${data.discount}%`}</strong>
 							</p>
-						) : (
-							<p>&nbsp;</p>
 						)}
 					</div>
 					<p>{data.status ? 'Есть в наличии' : 'На заказ'}</p>
