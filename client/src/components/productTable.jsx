@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import config from '../config.js'
+import sortProducts from '../utils/sortProducts.js'
 import Table from './common/table/table'
 
 const ProductTable = ({ products }) => {
@@ -9,8 +10,14 @@ const ProductTable = ({ products }) => {
 		setSorted(products)
 	}, [products])
 
-	const onSort = (sortData, dir) => {
-		const sortedList = sortProductsByOne(products, sortData, dir)
+	// 	const onSort = (sortData, dir) => {
+	// 		const sortedList = sortProductsByOne(products, sortData, dir)
+	//
+	// 		setSorted(sortedList)
+	// 	}
+	//
+	const onSort = (sortData) => {
+		const sortedList = sortProducts(products, sortData, getPricesMinMax().max)
 
 		setSorted(sortedList)
 	}
@@ -23,7 +30,6 @@ const ProductTable = ({ products }) => {
 				<img
 					src={config + 'uploads/' + product.images[0]}
 					className='img-thumbnail col-12'
-					// style={{ height: 50 }}
 				/>
 			),
 		},

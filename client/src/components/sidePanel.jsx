@@ -27,29 +27,29 @@ const SidePanel = ({ onSort, isAdmin, products, price }) => {
 	}
 	const [sortData, setSortData] = useState(initialSortData)
 
-	const initialConfig = {
-		price: sortData.price,
-		priceOrder: sortData.priceOrder,
-		inStock: sortData.inStock,
-		discount: sortData.discount,
-		chapter: sortData.chapter,
-		category: sortData.category,
-	}
-
-	const [formConfig, setFormConfig] = useState(initialConfig)
+	// 	const initialConfig = {
+	// 		price: sortData.price,
+	// 		priceOrder: sortData.priceOrder,
+	// 		inStock: sortData.inStock,
+	// 		discount: sortData.discount,
+	// 		chapter: sortData.chapter,
+	// 		category: sortData.category,
+	// 	}
+	//
+	// 	const [formConfig, setFormConfig] = useState(initialConfig)
 	const [show, setShow] = useState(true)
 
 	useEffect(() => {
 		setShow(true)
 	}, [])
 
-	useEffect(() => {
-		setFormConfig(sortData)
-	}, [sortData])
+	// useEffect(() => {
+	// 	setFormConfig(sortData)
+	// }, [sortData])
 
 	const mediaQuery = window.matchMedia('(min-width: 768px)')
 
-	function handleTabletChange(e) {
+	function handleTableChange(e) {
 		if (e.matches) {
 			setShow(true)
 		} else {
@@ -57,10 +57,10 @@ const SidePanel = ({ onSort, isAdmin, products, price }) => {
 		}
 	}
 
-	mediaQuery.addListener(handleTabletChange)
+	mediaQuery.addListener(handleTableChange)
 
 	useEffect(() => {
-		handleTabletChange(mediaQuery)
+		handleTableChange(mediaQuery)
 	}, [])
 
 	function getCategoryOpts() {
@@ -108,12 +108,13 @@ const SidePanel = ({ onSort, isAdmin, products, price }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
+		console.log('side panel sortData', sortData)
 		onSort(sortData)
 	}
 
 	const handleReset = () => {
 		setSortData(initialSortData)
-		setFormConfig(initialConfig)
+		// setFormConfig(initialConfig)
 		onSort(initialSortData)
 	}
 

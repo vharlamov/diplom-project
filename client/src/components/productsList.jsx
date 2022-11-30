@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
-import { getProductsList } from '../store/products'
+import { useHistory } from 'react-router-dom'
 import ProductTable from './productTable'
 
-const ProductsList = () => {
-	const data = useSelector(getProductsList())
+const ProductsList = ({ product }) => {
 	const history = useHistory()
-	const [products, setProducts] = useState(data)
+	// const [products, setProducts] = useState(product)
 	const [search, setSearch] = useState('')
-	const [filtered, setFiltered] = useState([])
-	const params = useParams()
+	// const [filtered, setFiltered] = useState([])
 
-	useEffect(() => {
-		setProducts(data)
-		filterBySearch()
-	}, [data])
+	// useEffect(() => {
+	// 	setProducts(product)
+	// 	console.log('product list product', product)
+	// 	filterBySearch()
+	// 	console.log('product list filtered', filtered)
+	// }, [product, filtered])
 
 	useEffect(() => {
 		filterBySearch()
@@ -31,11 +29,11 @@ const ProductsList = () => {
 
 	const filterBySearch = () => {
 		const filtrd = search
-			? products.filter((p) => {
+			? product.filter((p) => {
 					return p.title.toLowerCase().indexOf(search.toLowerCase(), 0) !== -1
 			  })
-			: products
-		setFiltered(filtrd)
+			: product
+		return filtrd
 	}
 
 	return (
@@ -49,7 +47,7 @@ const ProductsList = () => {
 				/>
 			</div>
 
-			<ProductTable products={filtered} />
+			<ProductTable products={filterBySearch()} />
 			<button className='btn btn-primary ' onClick={handleAdd}>
 				Добавить товар
 			</button>

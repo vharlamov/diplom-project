@@ -5,9 +5,8 @@ import SidePanel from '../components/sidePanel'
 import ProductsList from '../components/productsList'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProductsList } from '../store/products'
-import { getIsAdmin, getUsersList, loadUsersList } from '../store/users'
+import { getIsAdmin, loadUsersList } from '../store/users'
 import sortProducts from '../utils/sortProducts'
-import { getOrdersList, loadOrdersList } from '../store/orders'
 import OrdersList from '../components/ordersList'
 import OrderControl from '../components/orderControl'
 
@@ -17,15 +16,15 @@ const AdminPage = () => {
 	const isAdmin = useSelector(getIsAdmin())
 	const params = useParams()
 	const [product, setProduct] = useState(prodList)
-	const [sorted, setSorted] = useState(product)
+	// const [sorted, setSorted] = useState(product)
 
 	useEffect(() => {
 		dispatch(loadUsersList())
 	}, [])
 
-	useEffect(() => {
-		setProduct(prodList)
-	}, [prodList])
+	// useEffect(() => {
+	// 	setProduct(prodList)
+	// }, [prodList])
 
 	function getPricesMinMax() {
 		const prices = product.map((p) => p?.price).sort((a, b) => a - b)
@@ -33,9 +32,10 @@ const AdminPage = () => {
 	}
 
 	const onSort = (sortData) => {
-		const sortedList = sortProducts(product, sortData, getPricesMinMax().max)
-
-		setSorted(sortedList)
+		const sortedList = sortProducts(prodList, sortData, getPricesMinMax().max)
+		console.log('admin page onSort', sortedList)
+		// setSorted(sortedList)
+		setProduct(sortedList)
 	}
 
 	return (
@@ -53,7 +53,7 @@ const AdminPage = () => {
 					{params.add || params.id ? (
 						<ProductForm />
 					) : (
-						<ProductsList product={sorted} />
+						<ProductsList product={product} />
 					)}
 				</div>
 			</div>
